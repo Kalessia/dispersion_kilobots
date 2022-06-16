@@ -1,0 +1,9 @@
+echo
+echo "---------------------------------------------"
+echo "Kilobots dispersion"
+make clean
+make -j 5
+echo
+echo "get .hex..."
+make hex
+
