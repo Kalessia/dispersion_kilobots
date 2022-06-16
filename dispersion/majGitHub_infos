@@ -2,7 +2,24 @@ Kalessia
 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
 
 
+#######################################################
 
+RESUME :
+
+Toujours au debut : git fetch
+
+Pour récuperer modifications : git pull
+
+Pour enregistrer modifications :
+git status (donnes les noms de fichiers modifiés)
+git add fichierModifié
+git commit -m commentaire
+git push
+
+
+#######################################################
+
+EXPLICATIONS :
 
 ----------------------------------------
 git fetch
