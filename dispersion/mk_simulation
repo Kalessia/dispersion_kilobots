@@ -1,0 +1,9 @@
+echo
+echo "---------------------------------------------"
+echo "Kilobots dispersion"
+date
+echo
+
+make clean
+make -j 5
+./dispersion -p simulation.json
