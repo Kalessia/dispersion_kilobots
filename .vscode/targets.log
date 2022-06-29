@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun 29 13:40:44 2022
+# Make data base, printed on Wed Jun 29 13:59:04 2022
 
 # Variables
 
@@ -123,7 +123,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2165
+GIO_LAUNCHED_DESKTOP_FILE_PID = 4328
 # automatic
 %F = $(notdir $%)
 # environment
@@ -155,7 +155,7 @@ VSCODE_CODE_CACHE_PATH = /home/alessia/.config/Code/CachedData/30d9c6cd9483b2cc5
 # environment
 LOGNAME = alessia
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -189,7 +189,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-41ee1044-8ce1-4418-b215-71a0e4dcfc07.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-4dfd88de-a32b-44ba-a269-e5266b243905.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -269,7 +269,7 @@ LC_ADDRESS = fr_FR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2213
+VSCODE_PID = 4370
 # variable set hash-table stats:
 # Load=129/1024=13%, Rehash=0, Collisions=23/151=15%
 
@@ -279,10 +279,10 @@ VSCODE_PID = 2213
 
 # Directories
 
-# . (device 2053, inode 791690): 11 files, no impossibilities.
+# . (device 2053, inode 791690): 12 files, no impossibilities.
 
  
-# 11 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -332,12 +332,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 19 / storage = 171 B / avg = 9 B
-# current buf: size = 8162 B / used = 171 B / count = 19 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 20 / storage = 177 B / avg = 8 B
+# current buf: size = 8162 B / used = 177 B / count = 20 / avg = 8 B
 
-# strcache performance: lookups = 22 / hit rate = 13%
+# strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
-# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Wed Jun 29 13:40:44 2022
+# Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
+# Finished Make data base on Wed Jun 29 13:59:04 2022
 
  

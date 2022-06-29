@@ -146,8 +146,9 @@ void clearNeighbors(void) {
 void runAndTumbleWalk() {
 
     spinup_motors();
-
-    mydata->lastReset = 99;
+    mydata->lastReset++;
+    printf("ici: %d; %d\n", kilo_ticks, mydata->lastReset);
+    
     if(kilo_ticks % kiloticks_random_walk_choice == 0) {
         mydata->lastReset = kilo_ticks;
         printf("ici: %d; %d\n", kilo_ticks, mydata->lastReset);
@@ -161,7 +162,7 @@ void runAndTumbleWalk() {
         set_motors(kilo_straight_left, kilo_straight_right);
         set_color(RGB(0,3,0));
     }
-
+*/
  
     //set_color_from_nb_neighbours();
 }
@@ -183,6 +184,9 @@ void setup() {
     setup_message();
     //set_color(colors[0]);
     set_color(RGB(3,3,3));
+    
+    
+    mydata->lastReset = 0;
 }
 
 
