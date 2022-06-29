@@ -1,8 +1,13 @@
 {
     "botName" : "LIMMSSWARM",
     "randSeed" : 42,
+<<<<<<< HEAD
     "nBots" : 1,
     "arenaFileName": "arenas/arena1.csv",
+=======
+    "nBots" : 350,
+    "arenaFileName": "arenas/square-bugged.csv",
+>>>>>>> 11864ffe377b288e60162cb9718b18ec97354c0d
     "arenaNormalizedArea": 400000.0,
     "formation" : "random",
     "timeStep" : 0.0416666,
