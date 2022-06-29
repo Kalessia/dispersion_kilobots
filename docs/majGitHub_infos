@@ -1,0 +1,47 @@
+Kalessia
+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
+
+
+#######################################################
+
+RESUME :
+
+Toujours au debut : git fetch --all
+
+Pour récuperer modifications : git pull
+
+Pour enregistrer modifications :
+git status (donnes les noms de fichiers modifiés)
+git add fichierModifié
+git commit -m commentaire
+git push
+
+
+#######################################################
+
+EXPLICATIONS :
+
+----------------------------------------
+git fetch
+
+Dès que vous voulez faire une opération qui concerne le dépôt distant (publication ou récupération d'informations), commencez toujours par git fetch. Cela met à jour les informations sur les dépôts distants auxquels est rattaché votre dépôt local, si vous oubliez de le faire, vous risquez d'être faussé par le fait que l'historique des modifications que vous voyez (par exemple) n'est pas complet. 
+----------------------------------------
+echo "J'écris une ligne" >> mon_fichier.txt
+git add mon_nouveau_fichier.txt
+git commit -m "ajout d'une quatrième ligne dans le fichier"
+
+Upload des modifications en local sur le depot distant.
+----------------------------------------
+git push
+
+Publication des derniers commits sur le dépôt distant.
+----------------------------------------
+git status
+git push
+
+Là, on voit bien que notre branche master locale (master) est en avance de un commit sur la branche master distante (origin/master). HEAD indique simplement le commit sur lequel nous nous trouvons. Cela est confirmé par git status. Publions nos modifications comme git nous le propose avec un git push.
+----------------------------------------
+git pull
+
+Demandons à git de récupérer les modifications distantes et de les fusionner avec notre master local.
+----------------------------------------
