@@ -1,7 +1,3 @@
-/* TODO
- */
-
-/****************************************************/
 /* Includes {{{1 */
 #include <kilombo.h>
 #include <stdbool.h>
@@ -149,7 +145,8 @@ void clearNeighbors(void) {
 /* Locomotion {{{1 */
 void random_walk() {
     // move straight for 2 seconds (2000ms)
-    set_motors(kilo_straight_left, kilo_straight_right);
+    set_motors(0, kilo_straight_right);
+    //set_motors(kilo_straight_left, kilo_straight_right);
 
 
 
@@ -164,7 +161,6 @@ void random_walk() {
             set_motion(RIGHT);
         }
     }
-
 */
 
     set_color_from_nb_neighbours();

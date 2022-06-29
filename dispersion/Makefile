@@ -4,10 +4,12 @@
 # configured below, these needs to be adapted to the system.
 
 #list of c files in this project
-SOURCES=dispersion.c json_state.c util.c simulation.c
+#SOURCES=dispersion.c json_state.c util.c simulation.c
+SOURCES=blank.c json_state.c util.c simulation.c
 
 #name of the executable file
-EXECUTABLE=dispersion
+#EXECUTABLE=dispersion
+EXECUTABLE=blank
 
 # Path to the official kilolib, used for real bots only
 # Set it here, or as an environment variable in the shell:

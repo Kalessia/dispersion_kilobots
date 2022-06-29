@@ -60,6 +60,11 @@ typedef struct {
     data_type_t data_type;
 
     ext_t val;
+    
+    
+    // ajouts Alessia
+    uint8_t lastReset;
+    
 } USERDATA;
 
 extern USERDATA *mydata;

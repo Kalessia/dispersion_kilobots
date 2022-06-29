@@ -1,7 +1,7 @@
 {
     "botName" : "LIMMSSWARM",
     "randSeed" : 42,
-    "nBots" : 350,
+    "nBots" : 1,
     "arenaFileName": "arenas/arena1.csv",
     "arenaNormalizedArea": 400000.0,
     "formation" : "random",
@@ -21,7 +21,7 @@
     "saveVideoN" : 100,
     "colorscheme" : "bright",
     "imageName" : "./movie1/f%04d.bmp",
-    "stepsPerFrame" : 100,
+    "stepsPerFrame" : 10,
     "finalImage" : null,
     "stateFileName" : "simstates.json",
     "stateFileSteps" : 0,
