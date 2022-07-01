@@ -4,7 +4,7 @@ echo ">>> Kilobots dispersion - Making " $1
 date
 echo
 
-export KILOHEADERS=yourPathToKilolib
+export KILOHEADERS=/home/alessia/Documenti/dispersion_kilobots/kilolib
 make clean
 make dispersion
 
