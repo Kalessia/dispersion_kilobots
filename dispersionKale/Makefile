@@ -4,7 +4,8 @@
 # configured below, these needs to be adapted to the system.
 
 #list of c files in this project
-SOURCES=dispersion.c json_state.c util.c simulation.c
+#SOURCES=dispersion.c json_state.c util.c simulation.c
+SOURCES=dispersion.c json_state.c simulation.c
 
 #name of the executable file
 EXECUTABLE=dispersion
@@ -13,8 +14,7 @@ EXECUTABLE=dispersion
 # Set it here, or as an environment variable in the shell:
 #      export KILOHEADERS=/your/path/  
 #
-#KILOHEADERS=kilolib
-KILOHEADERS=/home/isir_kilobots/Documents/kilolib
+KILOHEADERS=/home/alessia/Documenti/dispersion_kilobots/kilolib
 
 # path of kilombo.h distributed with the simulator but also needed
 # when compiling the user program for the real kilobot (avr-gcc has different default paths)
@@ -46,7 +46,7 @@ hex: $(EXECUTABLE).hex
 all: sim hex
 
 clean :
-	rm -f *.o $(EXECUTABLE) *.elf *.hex
+	rm *.o $(EXECUTABLE) *.elf *.hex
 
 # # # # # # # # # # The following should be generic and not need changes # # # # # # # # # # # # # 
 
