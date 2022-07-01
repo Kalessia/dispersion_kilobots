@@ -14,7 +14,7 @@ EXECUTABLE=dispersion
 # Set it here, or as an environment variable in the shell:
 #      export KILOHEADERS=/your/path/  
 #
-KILOHEADERS=/home/alessia/Documenti/dispersion_kilobots/kilolib
+#KILOHEADERS=/home/alessia/Documenti/dispersion_kilobots/kilolib
 
 # path of kilombo.h distributed with the simulator but also needed
 # when compiling the user program for the real kilobot (avr-gcc has different default paths)
