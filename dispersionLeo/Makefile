@@ -8,8 +8,7 @@
 SOURCES=blank.c json_state.c util.c simulation.c
 
 #name of the executable file
-#EXECUTABLE=dispersion
-EXECUTABLE=blank
+EXECUTABLE=dispersion
 
 # Path to the official kilolib, used for real bots only
 # Set it here, or as an environment variable in the shell:
