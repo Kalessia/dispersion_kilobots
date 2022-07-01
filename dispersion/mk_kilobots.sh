@@ -1,3 +1,5 @@
+#!/bin/sh
+
 cp $1 dispersion.c
 echo
 echo ">>> Kilobots dispersion - Making " $1
