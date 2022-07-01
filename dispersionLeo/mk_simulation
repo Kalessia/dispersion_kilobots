@@ -1,0 +1,10 @@
+cp $1 blank.c
+echo "Kilobots dispersion - Making " $1
+date
+echo
+
+make clean
+make blank
+rm blank.c
+
+./blank -p simulation.json
