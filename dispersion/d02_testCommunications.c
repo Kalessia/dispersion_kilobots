@@ -6,15 +6,10 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d01_runAndTumble. 
-// Each kilobot starts moving at a different randomly chosen time, given by startingTime.
-// Led red = for a kticks_reorientationWalk period, kilobots turn and reorientate themselves,
-// randomly on the right or on the left.
-// Led green = for a kticks_straightWalk period, kilobots walk straight.
-
-// Adaptation for real kilobots ideas : 
-//	- kticks_straightWalk : time required to walk an half arena distance
-//	- kticks_reorientationWalk : time required for a 225° turn (opposite side, lateral) 
+// d02_testCommunication. 
+// Each kilobots sends messages continuously, led cyan = message sent correctly = no collisions detected.
+// Robots close by receive the messages, led yellow = message received.
+// Test this program with only 2 robots.
 
 
 
@@ -28,11 +23,11 @@
 #ifdef SIMULATOR
 #include <jansson.h>
 json_t *json_state();
-//#include <stdio.h>	// for printf
+//#include <stdio.h> 		// for printf
 #else
 #include <stdlib.h>
 //#include <avr/io.h>  	// for microcontroller register defs
-//  #define DEBUG 		// for printf to serial port
+//  #define DEBUG          	// for printf to serial port
 //  #include "debug.h"
 #endif
 
@@ -54,6 +49,30 @@ uint32_t const kticks_reorientationWalk = 500;
 
 
 //-------------------------------------------------------------------------------
+// MESSAGES
+//-------------------------------------------------------------------------------
+
+// message transmission callback : returns the address of the message (transmit_msg) we declared
+message_t *message_tx() {
+	return &mydata->transmit_msg;
+}
+
+// successful transmission callback
+void message_tx_success() {
+	mydata->flag_messageSent = 1;	// flag=1 means that a new message has been sent correctly
+}
+
+//-------------------------------------------------------------------------------
+
+void message_rx(message_t *msg, distance_measurement_t *dist) {
+	mydata->rcvd_message = *msg;
+	mydata->flag_newMessage = 1; 	// flag=1 means that a new message has arrived
+}
+
+
+
+
+//-------------------------------------------------------------------------------
 // FONCTIONS
 //-------------------------------------------------------------------------------
 
@@ -67,14 +86,12 @@ void runAndTumbleWalk() {
 	}
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
-		set_color(RGB(3,0,0)); 	// red
 		if (mydata->currentDirection == 0){
 			set_motors(0, kilo_turn_right);
 		} else {
 			set_motors(kilo_turn_left, 0);
 		}
 	} else {
-		set_color(RGB(0,3,0)); 	// green
 		set_motors(kilo_straight_left, kilo_straight_right);
 	}
 }
@@ -87,6 +104,16 @@ void runAndTumbleWalk() {
 //-------------------------------------------------------------------------------
 
 void setup() {
+
+	mydata->flag_messageSent = 0; // boolean
+	mydata->flag_newMessage = 0; // boolean
+
+	// Initialize transmit_msg
+	mydata->transmit_msg.type = NORMAL;
+	mydata->transmit_msg.data[0] = 0;
+	mydata->transmit_msg.crc = message_crc(&mydata->transmit_msg);
+
+	// Initialization variables
 	mydata->lastReset = 0;
 	mydata->startingTime = rand_hard();
 	printf("startingTime : %d\n", mydata->startingTime);
@@ -95,6 +122,19 @@ void setup() {
 
 
 void loop() {
+
+	// Check if the message has been successfully sent
+	if (mydata->flag_messageSent) {
+		mydata->flag_messageSent = 0;
+		set_color(RGB(0,3,3)); 	// cyan
+	}
+
+	// Check if a new message has arrived
+	if (mydata->flag_newMessage){
+		mydata->flag_newMessage = 0;
+		set_color(RGB(3,3,0)); 	// yellow
+	}
+
 	runAndTumbleWalk();
 }
 
@@ -103,6 +143,11 @@ int main() {
 	// Initialize kilobot hardware
 	kilo_init();
 	
+	// Register the message functions (transition and reception) with the kilobot library
+	kilo_message_tx = message_tx;
+	kilo_message_tx_success = message_tx_success;
+	kilo_message_rx = message_rx;
+
 	// Start kilobot event loop
 	kilo_start(setup, loop);
 	
