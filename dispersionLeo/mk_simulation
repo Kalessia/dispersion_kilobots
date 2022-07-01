@@ -1,10 +1,10 @@
-cp $1 blank.c
+cp $1 dispersion.c
 echo "Kilobots dispersion - Making " $1
 date
 echo
 
 make clean
-make blank
-rm blank.c
+make dispersion
+rm dispersion.c
 
-./blank -p simulation.json
+./dispersion -p simulation.json

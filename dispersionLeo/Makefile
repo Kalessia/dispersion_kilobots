@@ -5,7 +5,7 @@
 
 #list of c files in this project
 #SOURCES=dispersion.c json_state.c util.c simulation.c
-SOURCES=blank.c json_state.c util.c simulation.c
+SOURCES=dispersion.c json_state.c util.c simulation.c
 
 #name of the executable file
 EXECUTABLE=dispersion
