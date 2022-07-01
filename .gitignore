@@ -1,4 +1,4 @@
-**/mk_kilobots
+*/dispersion/mk_kilobots.*
 *.o
 *.elf
 *.hex
