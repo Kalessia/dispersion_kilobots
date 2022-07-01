@@ -12,11 +12,11 @@ Study of the coverage area problem within a robotic swarm.
     > make -j 10  
     > make install  
 
-- from *dispersionKale* folder, **RUN** ./mk_simulation *EXECUTABLEFILENAME*.c
+- from *dispersion* folder, **RUN** ./mk_simulation *EXECUTABLEFILENAME*.c
 
 &nbsp;
     
 ***To build a file.hex to upload on kilobots :***  
-- from *dispersionKale* folder, modify the *mk_kilobots* file at line "export KILOHEADERS=" : replace its value by the path to the official kilolib on your computer.  
-- from *dispersionKale* folder, **RUN** ./mk_kilobots *EXECUTABLEFILENAME*.c  
-- find the *EXECUTABLEFILENAME.c*.hex in the *dispersionKale/build* folder.
+- from *dispersion* folder, modify the *mk_kilobots* file at line "export KILOHEADERS=" : replace its value by the path to the official kilolib on your computer.  
+- from *dispersion* folder, **RUN** ./mk_kilobots *EXECUTABLEFILENAME*.c  
+- find the *EXECUTABLEFILENAME.c*.hex in the *dispersion/build* folder.
