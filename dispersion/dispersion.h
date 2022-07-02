@@ -14,6 +14,8 @@ set_color(RGB(0,3,3)); 	// cyan
 set_color(RGB(3,3,3)); 	// white
 */
 
+
+
 // declare variables
 typedef struct {
 
@@ -27,6 +29,10 @@ typedef struct {
   uint16_t lastReset;
   uint8_t startingTime;
   uint8_t currentDirection;
+
+  // d03
+  distance_measurement_t dist_measure;
+  uint8_t dist;
   
 } USERDATA;
 

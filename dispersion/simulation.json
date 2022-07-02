@@ -31,7 +31,7 @@
     "speed": 7,
     "turnRate" : 13,
     "GUI"  : 1 ,
-    "msgSuccessRate" : 0.8,
+    "msgSuccessRate" : 0.5,
     "distanceNoise" : 2,
     "arenaFileName": "../arenas/disk.csv",
     "arenaNormalizedArea": 70000.0

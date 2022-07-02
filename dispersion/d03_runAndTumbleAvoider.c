@@ -6,10 +6,19 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d02_testCommunication. 
-// Each kilobot broadcasts messages continuously, led cyan = message sent correctly = no collisions detected.
-// Robots close by receive the messages, led yellow = message received.
-// Test this program with only 2 robots.
+// d03_runAndTumbleAvoider.
+// Each kilobot broadcasts messages continuosly.
+// During the runAndTumble walk (d01), if the current kilobot meets another kilobot
+// at dist < max_authorized_distance, then the current kilobot turns on the right (led blue)
+// to avoid its neighbor. dist is obtained with the estimate_distance fonction
+// on received messages).
+
+// Led red : turn to the right or to the left (random choice)
+// Led green : straight
+// Led blue : turn right to avoid neighbor kilobot
+
+// Adaptation for real kilobots ideas : 
+//	- max_authorized_distance : min distance to detect the neighbor et react turning of 45°
 
 
 
@@ -42,8 +51,9 @@ REGISTER_USERDATA(USERDATA)
 // CONSTANTS
 //-------------------------------------------------------------------------------
 
-uint32_t const kticks_straightWalk = 500;
-uint32_t const kticks_reorientationWalk = 500;
+const uint32_t kticks_straightWalk = 500;
+const uint32_t kticks_reorientationWalk = 500;
+const uint8_t max_authorized_distance = 40;	// exprimé en mm
 
 
 
@@ -64,8 +74,9 @@ void message_tx_success() {
 
 //-------------------------------------------------------------------------------
 
-void message_rx(message_t *msg, distance_measurement_t *dist) {
+void message_rx(message_t *msg, distance_measurement_t *d) {
 	mydata->rcvd_message = *msg;
+	mydata->dist_measure = *d;
 	mydata->flag_newMessage = 1; 	// flag=1 means that a new message has arrived
 }
 
@@ -86,12 +97,14 @@ void runAndTumbleWalk() {
 	}
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
+		set_color(RGB(3,0,0)); 	// red
 		if (mydata->currentDirection == 0){
 			set_motors(0, kilo_turn_right);
 		} else {
 			set_motors(kilo_turn_left, 0);
 		}
 	} else {
+		set_color(RGB(0,3,0)); 	// green
 		set_motors(kilo_straight_left, kilo_straight_right);
 	}
 }
@@ -105,12 +118,12 @@ void runAndTumbleWalk() {
 
 void setup() {
 
-	mydata->flag_messageSent = 0; // boolean
-	mydata->flag_newMessage = 0; // boolean
+	mydata->flag_messageSent = 0; 	// boolean
+	mydata->flag_newMessage = 0; 	// boolean
 
 	// Initialize transmit_msg
 	mydata->transmit_msg.type = NORMAL;
-	mydata->transmit_msg.data[0] = 0;
+	mydata->transmit_msg.data[0] = 0;	// first byte of the message
 	mydata->transmit_msg.crc = message_crc(&mydata->transmit_msg);
 
 	// Initialization variables
@@ -118,6 +131,7 @@ void setup() {
 	mydata->startingTime = rand_hard();
 	printf("startingTime : %d\n", mydata->startingTime);
 	mydata->currentDirection = 1;
+	mydata->dist = 100;
 }
 
 
@@ -126,16 +140,21 @@ void loop() {
 	// Check if the message has been successfully sent
 	if (mydata->flag_messageSent) {
 		mydata->flag_messageSent = 0;
-		set_color(RGB(0,3,3)); 	// cyan
 	}
 
 	// Check if a new message has arrived
 	if (mydata->flag_newMessage){
 		mydata->flag_newMessage = 0;
-		set_color(RGB(3,3,0)); 	// yellow
+		mydata->dist = estimate_distance(&mydata->dist_measure);
 	}
 
-	runAndTumbleWalk();
+	if (mydata->dist < max_authorized_distance) {
+		set_color(RGB(0,0,3));	// blue
+		spinup_motors();
+		set_motors(0, kilo_turn_right);
+	} else {
+		runAndTumbleWalk();
+	}
 }
 
 
