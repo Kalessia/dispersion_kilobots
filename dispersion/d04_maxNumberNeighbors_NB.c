@@ -47,7 +47,7 @@ REGISTER_USERDATA(USERDATA)
 // periods expressed in kiloticks
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint32_t kticks_max_authorizedNeighborAge = 5000; // a neighborg has this age or less
+const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this age or less
 
 // distances expressed in mm
 const uint8_t dist_max_runAvoiderBehavior = 40;
@@ -221,7 +221,7 @@ void setNbNeighborsLed() {
 void showNeighborsList() {
 	if (mydata->nbNeighbors > 0) {
 		uint8_t i;
-		printf("[Kilobot ID%d] : list_neighbors.\t\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
+		printf("[Kilobot ID%d] : list_neighbors.     \t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
 		for (i = 0; i < mydata->nbNeighbors; i++) {
 			printf("\t\t\t\t\t| %d\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age);
 		}	

@@ -5,7 +5,7 @@
 
 // d04
 #ifndef MAX_AUTHORIZED_NBNEIGHBORS
-#define MAX_AUTHORIZED_NBNEIGHBORS 3 // authorized values : from 0 to 255 neighbors
+#define MAX_AUTHORIZED_NBNEIGHBORS 5 // authorized values : from 0 to 255 neighbors
 #endif
 
 // d
