@@ -161,9 +161,9 @@ void isKbotInNeighborsList() {
 		if (mydata->rcvd_msg == mydata->list_neighbors[i].id) {
 			mydata->flag_neighborAlreadyAdded = 1;
 			printf("[Kilobot ID%d] : Kilobot ID%d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
-			slideNeighborsListFrom(mydata->rcvd_msg); // upload age
-			addKbotToNeighborsList(); // upload age
-			printf("[Kilobot ID%d] : The age of the kilobot ID%d has been updated.\n", kilo_uid, mydata->rcvd_msg);
+			slideNeighborsListFrom(mydata->rcvd_msg); // update kilobot age
+			addKbotToNeighborsList(); // update kilobot age
+			printf("[Kilobot ID%d] : (The age of the kilobot ID%d has been updated).\n", kilo_uid, mydata->rcvd_msg);
 			break;
 		}
 	}
@@ -221,7 +221,7 @@ void setNbNeighborsLed() {
 void showNeighborsList() {
 	if (mydata->nbNeighbors > 0) {
 		uint8_t i;
-		printf("[Kilobot ID%d] : list_neighbors.\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
+		printf("[Kilobot ID%d] : list_neighbors.\t\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
 		for (i = 0; i < mydata->nbNeighbors; i++) {
 			printf("\t\t\t\t\t| %d\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age);
 		}	
@@ -295,7 +295,6 @@ void loop() {
 	}
 
 	printf("--------------------------------------------------------------------------------\n");
-
 }
 
 //-------------------------------------------------------------------------------
