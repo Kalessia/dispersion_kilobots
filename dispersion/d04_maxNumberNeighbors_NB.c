@@ -62,7 +62,6 @@ const uint8_t dist_min_between2Kbots = 60;
 
 // message transmission callback : returns the address of the message (transmit_msg) we declared
 message_t *message_tx() {
-	//printf("myID : %d ; nouveau msg envoyé: %d_%d\n", kilo_uid, mydata->transmit_msg.data[0], mydata->transmit_msg.data[1]);
 	return &mydata->transmit_msg;
 }
 
@@ -142,14 +141,14 @@ void keepWalking() {
 //-------------------------------------------------------------------------------
 
 void addKbotToNeighborsList() {
-	printf("[Kilobot ID %d] : Adding kilobot %d to database...\n", kilo_uid, mydata->rcvd_msg);
+	printf("[Kilobot ID%d] : Adding kilobot ID%d to database...\n", kilo_uid, mydata->rcvd_msg);
 	if (mydata->nbNeighbors < MAX_AUTHORIZED_NBNEIGHBORS) {
 		mydata->list_neighbors[mydata->nbNeighbors].id = mydata->rcvd_msg;
 		mydata->list_neighbors[mydata->nbNeighbors].age = kilo_ticks;
 		mydata->nbNeighbors = mydata->nbNeighbors + 1;
-		printf("[Kilobot ID %d] : Kilobot %d has been added to list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
+		printf("[Kilobot ID%d] : Kilobot ID%d has been added to list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
 	} else {
-		printf("[Kilobot ID %d] : Impossible to add kilobot %d to list_neighbors, no more space in database! (nbNeighbors = %d).\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
+		printf("[Kilobot ID%d] : Impossible to add kilobot ID%d to list_neighbors, no more space in database! (nbNeighbors = %d).\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
 	}
 }
 
@@ -161,10 +160,10 @@ void isKbotInNeighborsList() {
 	for (i = 0; i < mydata->nbNeighbors; i++) {
 		if (mydata->rcvd_msg == mydata->list_neighbors[i].id) {
 			mydata->flag_neighborAlreadyAdded = 1;
-			printf("[Kilobot ID %d] : Kilobot ID %d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
+			printf("[Kilobot ID%d] : Kilobot ID%d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
 			slideNeighborsListFrom(mydata->rcvd_msg); // upload age
 			addKbotToNeighborsList(); // upload age
-			printf("[Kilobot ID %d] : The age of the kilobot ID %d has been updated.\n", kilo_uid, mydata->rcvd_msg);
+			printf("[Kilobot ID%d] : The age of the kilobot ID%d has been updated.\n", kilo_uid, mydata->rcvd_msg);
 			break;
 		}
 	}
@@ -222,7 +221,7 @@ void setNbNeighborsLed() {
 void showNeighborsList() {
 	if (mydata->nbNeighbors > 0) {
 		uint8_t i;
-		printf("[Kilobot ID %d] : list_neighbors.\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
+		printf("[Kilobot ID%d] : list_neighbors.\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
 		for (i = 0; i < mydata->nbNeighbors; i++) {
 			printf("\t\t\t\t\t| %d\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age);
 		}	
@@ -261,13 +260,13 @@ void setup() {
 void loop() {
 	
 	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighbors[0].age) > kticks_max_authorizedNeighborAge)) {
-		printf("[Kilobot ID %d] : Sliding list_neighbors (Kilobot %d is too old : distance = %d).\n", kilo_uid, mydata->list_neighbors[0].id, mydata->list_neighbors[0].age);
+		printf("[Kilobot ID%d] : Sliding list_neighbors (Kilobot ID%d is too old : distance = %d).\n", kilo_uid, mydata->list_neighbors[0].id, mydata->list_neighbors[0].age);
 		slideNeighborsListFrom(mydata->list_neighbors[0].id);
 	}
 
 	// Check if a new message has arrived
 	if (mydata->flag_newMessage) {
-		printf("[Kilobot ID %d] : New message ! Kilobot %d has been detected at distance %d.\n", kilo_uid, mydata->rcvd_msg, mydata->dist);
+		printf("[Kilobot ID%d] : New message ! Kilobot ID%d has been detected at distance %d.\n", kilo_uid, mydata->rcvd_msg, mydata->dist);
 
 		isKbotInNeighborsList(); // sets the flag_neighborAlreadyAdded
 		if ((!mydata->flag_neighborAlreadyAdded) && (mydata->dist >= dist_min_between2Kbots)) {
