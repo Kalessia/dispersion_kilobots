@@ -44,10 +44,14 @@ REGISTER_USERDATA(USERDATA)
 // CONSTANTS
 //-------------------------------------------------------------------------------
 
+// periods expressed in kiloticks
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint32_t kticks_max_authorized_age = 5000;
-const uint8_t max_authorized_distance = 40;		// exprimée en mm
+const uint32_t kticks_max_authorizedNeighborAge = 5000; // a neighborg has this age or less
+
+// distances expressed in mm
+const uint8_t dist_max_runAvoiderBehavior = 40;
+const uint8_t dist_ideal = 65;
 
 
 
@@ -113,7 +117,7 @@ void runAndTumbleWalk() {
 
 //-------------------------------------------------------------------------------
 
-// If the current kilobot meets another kilobot at dist < max_authorized_distance,
+// If the current kilobot meets another kilobot at dist < dist_max_avoiderBehavior,
 // then the current kilobot turns right (led blue)
 void avoider() {
 	//set_color(RGB(0,0,3));	// blue
@@ -124,7 +128,7 @@ void avoider() {
 //-------------------------------------------------------------------------------
 
 void keepWalking() {
-	if (mydata->dist < max_authorized_distance) {
+	if (mydata->dist < dist_max_runAvoiderBehavior) {
 		avoider();
 	} else {
 		runAndTumbleWalk();
@@ -173,7 +177,7 @@ void setup() {
 void loop() {
 	uint8_t i;
 	
-	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighborsAges[0]) > kticks_max_authorized_age)) {
+	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighborsAges[0]) > kticks_max_authorizedNeighborAge)) {
 		printf("myID : %d ; >>>>>>>>>>>>>>>>>>>>>>>>>>>TIMEOUT pour %d\n", kilo_uid, mydata->list_neighborsIds[i]);
 		for (i = 0; i < mydata->nbNeighbors - 1; i++){		
 			mydata->list_neighborsIds[i] = mydata->list_neighborsIds[i+1];
@@ -203,11 +207,12 @@ void loop() {
 		printf("flag_neighborAlreadyAdded: %d\n", mydata->flag_neighborAlreadyAdded);
 
 
-		if (!mydata->flag_neighborAlreadyAdded) {
+		if ((!mydata->flag_neighborAlreadyAdded) && (mydata->dist >= dist_ideal)) {
 			if (mydata->nbNeighbors < MAX_AUTHORIZED_NBNEIGHBORS){
 				mydata->list_neighborsIds[mydata->nbNeighbors] = mydata->rcvd_msg;
 				mydata->list_neighborsAges[mydata->nbNeighbors] = kilo_ticks;
 				mydata->nbNeighbors = mydata->nbNeighbors + 1;
+				
 				printf("myID : %d ; adding neighbor %d to tab. NbNeighbors = %d\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
 			} else {
 				//mydata->flag_correctNbNeighbors = 1;
@@ -237,7 +242,7 @@ void loop() {
 			set_color(RGB(3,0,3)); // magenta (we want 3 neighbors)
 			break;
 		default :
-			set_color(RGB(0,0,0)); // more than 3
+			set_color(RGB(0,0,0)); // more than 3 (debug, impossible)
 	}
 
 	if (mydata->flag_correctNbNeighbors) {
