@@ -67,11 +67,6 @@ message_t *message_tx() {
 	return &mydata->transmit_msg;
 }
 
-// successful transmission callback
-void message_tx_success() {
-	mydata->flag_messageSent = 1;	// flag=1 means that a new message has been sent correctly
-}
-
 //-------------------------------------------------------------------------------
 
 void message_rx(message_t *msg, distance_measurement_t *d) {
@@ -97,6 +92,7 @@ void runAndTumbleWalk() {
 	}
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
+		// Turn right or turn left
 		set_color(RGB(3,0,0)); 	// red
 		if (mydata->currentDirection == 0){
 			set_motors(0, kilo_turn_right);
@@ -104,9 +100,19 @@ void runAndTumbleWalk() {
 			set_motors(kilo_turn_left, 0);
 		}
 	} else {
+		// Go straight
 		set_color(RGB(0,3,0)); 	// green
 		set_motors(kilo_straight_left, kilo_straight_right);
 	}
+}
+
+
+// If the current kilobot meets another kilobot at dist < max_authorized_distance,
+// then the current kilobot turns right (led blue)
+void avoider() {
+	set_color(RGB(0,0,3));	// blue
+	spinup_motors();
+	set_motors(0, kilo_turn_right);
 }
 
 
@@ -118,7 +124,6 @@ void runAndTumbleWalk() {
 
 void setup() {
 
-	mydata->flag_messageSent = 0; 	// boolean
 	mydata->flag_newMessage = 0; 	// boolean
 
 	// Initialize transmit_msg
@@ -137,11 +142,6 @@ void setup() {
 
 void loop() {
 
-	// Check if the message has been successfully sent
-	if (mydata->flag_messageSent) {
-		mydata->flag_messageSent = 0;
-	}
-
 	// Check if a new message has arrived
 	if (mydata->flag_newMessage){
 		mydata->flag_newMessage = 0;
@@ -149,9 +149,7 @@ void loop() {
 	}
 
 	if (mydata->dist < max_authorized_distance) {
-		set_color(RGB(0,0,3));	// blue
-		spinup_motors();
-		set_motors(0, kilo_turn_right);
+		avoider();
 	} else {
 		runAndTumbleWalk();
 	}
@@ -164,7 +162,6 @@ int main() {
 	
 	// Register the message functions (transition and reception) with the kilobot library
 	kilo_message_tx = message_tx;
-	kilo_message_tx_success = message_tx_success;
 	kilo_message_rx = message_rx;
 
 	// Start kilobot event loop
