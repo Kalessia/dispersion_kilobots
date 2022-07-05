@@ -28,12 +28,12 @@ json_t *json_state();
 //#include <stdio.h> 		// for printf
 #else
 #include <stdlib.h>
-//#include <avr/io.h>  	// for microcontroller register defs
+//#include <avr/io.h>  		// for microcontroller register defs
 //  #define DEBUG          	// for printf to serial port
 //  #include "debug.h"
 #endif
 
-#include "dispersion.h"	// defines the USERDATA structure
+#include "dispersion.h"		// defines the USERDATA structure
 #include "simulation.h"
 REGISTER_USERDATA(USERDATA)
 
@@ -51,7 +51,7 @@ const uint32_t kticks_max_authorizedNeighborAge = 5000; // a neighborg has this 
 
 // distances expressed in mm
 const uint8_t dist_max_runAvoiderBehavior = 40;
-const uint8_t dist_ideal = 65;
+const uint8_t dist_min_between2Kbots = 60;
 
 
 
@@ -81,6 +81,7 @@ void setMsg_sendMyId() {
 void message_rx(message_t *msg, distance_measurement_t *d) {
 	mydata->rcvd_msg = msg->data[0] | msg->data[1] << 8; // pointed value
 	mydata->dist_measure = *d;
+	mydata->dist = estimate_distance(&mydata->dist_measure);
 	mydata->flag_newMessage = 1; 	// flag=1 means that a new message has arrived
 }
 
@@ -102,24 +103,22 @@ void runAndTumbleWalk() {
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
 		// Turn right or turn left
-		//set_color(RGB(3,0,0)); 	// red
-		if (mydata->currentDirection == 0){
+		if (mydata->currentDirection == 0) {
 			set_motors(0, kilo_turn_right);
 		} else {
 			set_motors(kilo_turn_left, 0);
 		}
 	} else {
 		// Go straight
-		//set_color(RGB(0,3,0)); 	// green
 		set_motors(kilo_straight_left, kilo_straight_right);
 	}
 }
 
 //-------------------------------------------------------------------------------
 
-// If the current kilobot meets another kilobot at dist < dist_max_avoiderBehavior,
-// then the current kilobot turns right (led blue)
-void avoider() {
+// If the current kilobot meets another kilobot at dist < dist_max_runAvoiderBehavior,
+// then the current kilobot turns right
+void avoiderBehavior() {
 	//set_color(RGB(0,0,3));	// blue
 	spinup_motors();
 	set_motors(0, kilo_turn_right);
@@ -129,7 +128,7 @@ void avoider() {
 
 void keepWalking() {
 	if (mydata->dist < dist_max_runAvoiderBehavior) {
-		avoider();
+		avoiderBehavior();
 	} else {
 		runAndTumbleWalk();
 	}
@@ -142,7 +141,88 @@ void keepWalking() {
 // NEIGHBORS MANAGEMENT FONCTIONS
 //-------------------------------------------------------------------------------
 
+void addKbotToNeighborsList() {
+	printf("[Kilobot ID %d] : Adding kilobot %d to database...\n", kilo_uid, mydata->rcvd_msg);
+	if (mydata->nbNeighbors < MAX_AUTHORIZED_NBNEIGHBORS) {
+		mydata->list_neighbors[mydata->nbNeighbors].id = mydata->rcvd_msg;
+		mydata->list_neighbors[mydata->nbNeighbors].age = kilo_ticks;
+		mydata->nbNeighbors = mydata->nbNeighbors + 1;
+		printf("[Kilobot ID %d] : Kilobot %d has been added to list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
+	} else {
+		printf("[Kilobot ID %d] : Impossible to add kilobot %d to list_neighbors, no more space in database! (nbNeighbors = %d).\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
+	}
+}
 
+//-------------------------------------------------------------------------------
+
+void isKbotInNeighborsList() {
+	uint8_t i;
+	mydata->flag_neighborAlreadyAdded = 0;
+	for (i = 0; i < mydata->nbNeighbors; i++) {
+		if (mydata->rcvd_msg == mydata->list_neighbors[i].id) {
+			mydata->flag_neighborAlreadyAdded = 1;
+			mydata->list_neighbors[i].age = kilo_ticks; // upload age
+			printf("[Kilobot ID %d] : Kilobot ID %d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
+			break;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------
+
+void slideNeighborsList() {
+	uint8_t i;
+	for (i = 0; i < mydata->nbNeighbors - 1; i++){		
+		mydata->list_neighbors[i].id = mydata->list_neighbors[i+1].id;
+		mydata->list_neighbors[i].age = mydata->list_neighbors[i+1].age;
+	}
+	mydata->list_neighbors[i].id = NULL;
+	mydata->list_neighbors[i].age = NULL;
+
+	mydata->nbNeighbors = mydata->nbNeighbors - 1;
+}
+
+//-------------------------------------------------------------------------------
+
+void setNbNeighborsLed() {
+	switch (mydata->nbNeighbors) {
+		case 0 :
+			set_color(RGB(3,3,3)); // white
+			break;
+		case 1 :
+			set_color(RGB(3,3,0)); // yellow 
+			break;
+		case 2 :
+			set_color(RGB(0,3,0)); // green
+			break;
+		case 3 :
+			set_color(RGB(0,3,3)); // cyan
+			break;
+		case 4 :
+			set_color(RGB(0,0,3)); // blue
+			break;
+		case 5 :
+			set_color(RGB(3,0,3)); // magenta 
+			break;
+		case 6 :
+			set_color(RGB(3,0,0)); // red
+			break;
+		default :
+			set_color(RGB(0,0,0)); // off
+	}
+}
+
+//-------------------------------------------------------------------------------
+
+void showNeighborsList() {
+	if (mydata->nbNeighbors > 0) {
+		uint8_t i;
+		printf("[Kilobot ID %d] : list_neighbors.\t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
+		for (i = 0; i < mydata->nbNeighbors; i++) {
+			printf("\t\t\t\t\t| %d\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age);
+		}	
+	}
+}
 
 
 
@@ -153,105 +233,65 @@ void keepWalking() {
 
 void setup() {
 
-	mydata->flag_newMessage = 0; 	// boolean
-
+	// messages
+	mydata->flag_newMessage = 0;
 	setMsg_sendMyId();
 
 	// d01
 	mydata->lastReset = 0;
 	mydata->startingTime = rand_hard();
-	//printf("startingTime : %d\n", mydata->startingTime);
 	//mydata->currentDirection = 1;
 
 	// d03
 	mydata->dist = 100;
 
 	// d04
-	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors > max_authorized_nbNeighbors
 	mydata->nbNeighbors = 0;
 	mydata->flag_neighborAlreadyAdded = 0;
+	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors = max_authorized_nbNeighbors
 }
 
 //-------------------------------------------------------------------------------
 
 void loop() {
-	uint8_t i;
 	
-	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighborsAges[0]) > kticks_max_authorizedNeighborAge)) {
-		printf("myID : %d ; >>>>>>>>>>>>>>>>>>>>>>>>>>>TIMEOUT pour %d\n", kilo_uid, mydata->list_neighborsIds[i]);
-		for (i = 0; i < mydata->nbNeighbors - 1; i++){		
-			mydata->list_neighborsIds[i] = mydata->list_neighborsIds[i+1];
-			mydata->list_neighborsAges[i] = mydata->list_neighborsAges[i+1];
-			printf("myID : %d ; REFRESHING myTab at position %d : %d\n", kilo_uid, i, mydata->list_neighborsIds[i]);
-		}
-		mydata->list_neighborsIds[i] = NULL;
-		mydata->list_neighborsAges[i] = NULL;
-
-		mydata->nbNeighbors = mydata->nbNeighbors - 1;
+	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighbors[0].age) > kticks_max_authorizedNeighborAge)) {
+		printf("[Kilobot ID %d] : Sliding list_neighbors (Kilobot %d is too old : distance = %d).\n", kilo_uid, mydata->list_neighbors[0].id, mydata->list_neighbors[0].age);
+		slideNeighborsList();
 	}
 
 	// Check if a new message has arrived
-	if (mydata->flag_newMessage){
-		printf("\nmyID : %d ; new neighbor detected : %d\n", kilo_uid, mydata->rcvd_msg);
-		mydata->dist = estimate_distance(&mydata->dist_measure);
+	if (mydata->flag_newMessage) {
+		printf("[Kilobot ID %d] : New message ! Kilobot %d has been detected at distance %.2f.\n", kilo_uid, mydata->rcvd_msg, mydata->dist);
 
-		mydata->flag_neighborAlreadyAdded = 0;
-		for (i = 0; i < mydata->nbNeighbors; i++){
-			printf("myID : %d ; myTab at position %d : %d\n", kilo_uid, i, mydata->list_neighborsIds[i]);
-			if (mydata->rcvd_msg == mydata->list_neighborsIds[i]) {
-				mydata->flag_neighborAlreadyAdded = 1;
-				printf("myID : %d ; neighbor %d IsAlreadyAdded\n", kilo_uid, mydata->rcvd_msg);
-				//break;
-			}
+		isKbotInNeighborsList(); // sets the flag_neighborAlreadyAdded
+		if ((!mydata->flag_neighborAlreadyAdded) && (mydata->dist >= dist_min_between2Kbots)) {
+			addKbotToNeighborsList(); // sets the nbNeighbors
 		}
-		printf("flag_neighborAlreadyAdded: %d\n", mydata->flag_neighborAlreadyAdded);
 
-
-		if ((!mydata->flag_neighborAlreadyAdded) && (mydata->dist >= dist_ideal)) {
-			if (mydata->nbNeighbors < MAX_AUTHORIZED_NBNEIGHBORS){
-				mydata->list_neighborsIds[mydata->nbNeighbors] = mydata->rcvd_msg;
-				mydata->list_neighborsAges[mydata->nbNeighbors] = kilo_ticks;
-				mydata->nbNeighbors = mydata->nbNeighbors + 1;
-				
-				printf("myID : %d ; adding neighbor %d to tab. NbNeighbors = %d\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
-			} else {
-				//mydata->flag_correctNbNeighbors = 1;
-				printf("myID : %d ; no more space in database! mydata->nbNeighbors = %d\n", kilo_uid, mydata->nbNeighbors);
-			}
-		}
 		mydata->flag_newMessage = 0;
 	}
 
+	showNeighborsList();
+	
 	if (mydata->nbNeighbors == MAX_AUTHORIZED_NBNEIGHBORS) {
 		mydata->flag_correctNbNeighbors = 1;
 	} else {
 		mydata->flag_correctNbNeighbors = 0;
 	}
 	
-	switch (mydata->nbNeighbors) {
-		case 0 :
-			set_color(RGB(3,3,3)); // white
-			break;
-		case 1 :
-			set_color(RGB(3,3,0)); // yellow 
-			break;
-		case 2 :
-			set_color(RGB(0,3,3)); // cyan
-			break;
-		case 3 :
-			set_color(RGB(3,0,3)); // magenta (we want 3 neighbors)
-			break;
-		default :
-			set_color(RGB(0,0,0)); // more than 3 (debug, impossible)
-	}
+	setNbNeighborsLed();
 
 	if (mydata->flag_correctNbNeighbors) {
-		// Keep the current position	
+		// Keep the current position
 		set_motors(0,0);
 	} else {
 		// Keep walking to find a better zone
 		keepWalking();
 	}
+
+	printf("--------------------------------------------------------------------------------\n");
+
 }
 
 //-------------------------------------------------------------------------------

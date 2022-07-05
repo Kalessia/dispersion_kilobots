@@ -35,6 +35,12 @@ set_color(RGB(3,3,3)); 	// white
 //-------------------------------------------------------------------------------
 
 typedef struct {
+  uint16_t id;
+  uint16_t age;
+} neighbor_t;
+
+
+typedef struct {
 
   // Messages variables
   message_t transmit_msg;
@@ -56,8 +62,7 @@ typedef struct {
   uint8_t flag_correctNbNeighbors;  // boolean
   uint8_t flag_neighborAlreadyAdded;   // boolean
   uint8_t nbNeighbors;  // current nb of neighbors added to list_neighborsIds = current list size
-  uint16_t list_neighborsIds[MAX_AUTHORIZED_NBNEIGHBORS];    // list of detected different neighbors
-  uint16_t list_neighborsAges[MAX_AUTHORIZED_NBNEIGHBORS];    // list
+  neighbor_t list_neighbors[MAX_AUTHORIZED_NBNEIGHBORS]; // list of detected different neighbors
 
 } USERDATA;
 
