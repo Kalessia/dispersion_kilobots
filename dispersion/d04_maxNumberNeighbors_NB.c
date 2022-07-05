@@ -161,8 +161,10 @@ void isKbotInNeighborsList() {
 	for (i = 0; i < mydata->nbNeighbors; i++) {
 		if (mydata->rcvd_msg == mydata->list_neighbors[i].id) {
 			mydata->flag_neighborAlreadyAdded = 1;
-			mydata->list_neighbors[i].age = kilo_ticks; // upload age
 			printf("[Kilobot ID %d] : Kilobot ID %d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
+			slideNeighborsListFrom(mydata->rcvd_msg); // upload age
+			addKbotToNeighborsList(); // upload age
+			printf("[Kilobot ID %d] : The age of the kilobot ID %d has been updated.\n", kilo_uid, mydata->rcvd_msg);
 			break;
 		}
 	}
@@ -170,11 +172,14 @@ void isKbotInNeighborsList() {
 
 //-------------------------------------------------------------------------------
 
-void slideNeighborsList() {
+// erase
+void slideNeighborsListFrom(uint16_t kBotId) {
 	uint8_t i;
-	for (i = 0; i < mydata->nbNeighbors - 1; i++){		
-		mydata->list_neighbors[i].id = mydata->list_neighbors[i+1].id;
-		mydata->list_neighbors[i].age = mydata->list_neighbors[i+1].age;
+	for (i = 0; i < mydata->nbNeighbors - 1; i++){	
+		if (mydata->list_neighbors[i].id == kBotId) {
+			mydata->list_neighbors[i].id = mydata->list_neighbors[i+1].id;
+			mydata->list_neighbors[i].age = mydata->list_neighbors[i+1].age;
+		}	
 	}
 	mydata->list_neighbors[i].id = NULL;
 	mydata->list_neighbors[i].age = NULL;
@@ -240,7 +245,7 @@ void setup() {
 	// d01
 	mydata->lastReset = 0;
 	mydata->startingTime = rand_hard();
-	//mydata->currentDirection = 1;
+	mydata->currentDirection = 1;
 
 	// d03
 	mydata->dist = 100;
@@ -257,12 +262,12 @@ void loop() {
 	
 	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighbors[0].age) > kticks_max_authorizedNeighborAge)) {
 		printf("[Kilobot ID %d] : Sliding list_neighbors (Kilobot %d is too old : distance = %d).\n", kilo_uid, mydata->list_neighbors[0].id, mydata->list_neighbors[0].age);
-		slideNeighborsList();
+		slideNeighborsListFrom(mydata->list_neighbors[0].id);
 	}
 
 	// Check if a new message has arrived
 	if (mydata->flag_newMessage) {
-		printf("[Kilobot ID %d] : New message ! Kilobot %d has been detected at distance %.2f.\n", kilo_uid, mydata->rcvd_msg, mydata->dist);
+		printf("[Kilobot ID %d] : New message ! Kilobot %d has been detected at distance %d.\n", kilo_uid, mydata->rcvd_msg, mydata->dist);
 
 		isKbotInNeighborsList(); // sets the flag_neighborAlreadyAdded
 		if ((!mydata->flag_neighborAlreadyAdded) && (mydata->dist >= dist_min_between2Kbots)) {
