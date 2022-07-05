@@ -53,10 +53,10 @@ typedef struct {
   uint8_t dist;
   
   // d04
-  uint8_t flag_tooMuchNeighbors;  // boolean
+  uint8_t flag_correctNbNeighbors;  // boolean
   uint8_t flag_neighborAlreadyAdded;   // boolean
-  uint8_t nbNeighbors;
-  uint16_t list_neighborsIds[MAX_AUTHORIZED_NBNEIGHBORS];    // list
+  uint8_t nbNeighbors;  // current nb of neighbors added to list_neighborsIds = current list size
+  uint16_t list_neighborsIds[MAX_AUTHORIZED_NBNEIGHBORS];    // list of detected different neighbors
   uint16_t list_neighborsAges[MAX_AUTHORIZED_NBNEIGHBORS];    // list
 
 } USERDATA;

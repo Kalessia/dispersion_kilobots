@@ -46,7 +46,7 @@ REGISTER_USERDATA(USERDATA)
 
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint32_t kticks_max_authorized_age = 2000;
+const uint32_t kticks_max_authorized_age = 5000;
 const uint8_t max_authorized_distance = 40;		// exprimée en mm
 
 
@@ -163,7 +163,7 @@ void setup() {
 	mydata->dist = 100;
 
 	// d04
-	mydata->flag_tooMuchNeighbors = 1;	// flag=1 means that nbNeighbors > max_authorized_nbNeighbors
+	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors > max_authorized_nbNeighbors
 	mydata->nbNeighbors = 0;
 	mydata->flag_neighborAlreadyAdded = 0;
 }
@@ -172,10 +172,13 @@ void setup() {
 
 void loop() {
 	uint8_t i;
-	if ((kilo_ticks - mydata->list_neighborsAges[0]) > kticks_max_authorized_age) {
+	
+	if ((mydata->nbNeighbors > 0) && ((kilo_ticks - mydata->list_neighborsAges[0]) > kticks_max_authorized_age)) {
+		printf("myID : %d ; >>>>>>>>>>>>>>>>>>>>>>>>>>>TIMEOUT pour %d\n", kilo_uid, mydata->list_neighborsIds[i]);
 		for (i = 0; i < mydata->nbNeighbors - 1; i++){		
 			mydata->list_neighborsIds[i] = mydata->list_neighborsIds[i+1];
 			mydata->list_neighborsAges[i] = mydata->list_neighborsAges[i+1];
+			printf("myID : %d ; REFRESHING myTab at position %d : %d\n", kilo_uid, i, mydata->list_neighborsIds[i]);
 		}
 		mydata->list_neighborsIds[i] = NULL;
 		mydata->list_neighborsAges[i] = NULL;
@@ -183,21 +186,18 @@ void loop() {
 		mydata->nbNeighbors = mydata->nbNeighbors - 1;
 	}
 
-
 	// Check if a new message has arrived
 	if (mydata->flag_newMessage){
 		printf("\nmyID : %d ; new neighbor detected : %d\n", kilo_uid, mydata->rcvd_msg);
 		mydata->dist = estimate_distance(&mydata->dist_measure);
 
+		mydata->flag_neighborAlreadyAdded = 0;
 		for (i = 0; i < mydata->nbNeighbors; i++){
 			printf("myID : %d ; myTab at position %d : %d\n", kilo_uid, i, mydata->list_neighborsIds[i]);
-
 			if (mydata->rcvd_msg == mydata->list_neighborsIds[i]) {
 				mydata->flag_neighborAlreadyAdded = 1;
 				printf("myID : %d ; neighbor %d IsAlreadyAdded\n", kilo_uid, mydata->rcvd_msg);
-				break;
-			} else {
-				mydata->flag_neighborAlreadyAdded = 0;
+				//break;
 			}
 		}
 		printf("flag_neighborAlreadyAdded: %d\n", mydata->flag_neighborAlreadyAdded);
@@ -210,21 +210,42 @@ void loop() {
 				mydata->nbNeighbors = mydata->nbNeighbors + 1;
 				printf("myID : %d ; adding neighbor %d to tab. NbNeighbors = %d\n", kilo_uid, mydata->rcvd_msg, mydata->nbNeighbors);
 			} else {
-				mydata->flag_tooMuchNeighbors = 1;
+				//mydata->flag_correctNbNeighbors = 1;
 				printf("myID : %d ; no more space in database! mydata->nbNeighbors = %d\n", kilo_uid, mydata->nbNeighbors);
 			}
 		}
 		mydata->flag_newMessage = 0;
 	}
 
-	if (mydata->flag_tooMuchNeighbors) {
-		// Keep walking to find a better zone
-		set_color(RGB(3,3,3)); // white
-		keepWalking();
+	if (mydata->nbNeighbors == MAX_AUTHORIZED_NBNEIGHBORS) {
+		mydata->flag_correctNbNeighbors = 1;
 	} else {
-		// Keep the current position
-		set_color(RGB(3,0,3)); // magenta
+		mydata->flag_correctNbNeighbors = 0;
+	}
+	
+	switch (mydata->nbNeighbors) {
+		case 0 :
+			set_color(RGB(3,3,3)); // white
+			break;
+		case 1 :
+			set_color(RGB(3,3,0)); // yellow 
+			break;
+		case 2 :
+			set_color(RGB(0,3,3)); // cyan
+			break;
+		case 3 :
+			set_color(RGB(3,0,3)); // magenta (we want 3 neighbors)
+			break;
+		default :
+			set_color(RGB(0,0,0)); // more than 3
+	}
+
+	if (mydata->flag_correctNbNeighbors) {
+		// Keep the current position	
 		set_motors(0,0);
+	} else {
+		// Keep walking to find a better zone
+		keepWalking();
 	}
 }
 
