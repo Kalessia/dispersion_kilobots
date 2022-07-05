@@ -47,7 +47,7 @@ REGISTER_USERDATA(USERDATA)
 // periods expressed in kiloticks
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this age or less
+const uint32_t kticks_max_authorizedNeighborAge = 2000; // a neighborg has this age or less
 
 // distances expressed in mm
 const uint8_t dist_max_runAvoiderBehavior = 40;
@@ -154,6 +154,14 @@ void addKbotToNeighborsList() {
 
 //-------------------------------------------------------------------------------
 
+void updateKbotAge(uint16_t kBotId) {
+	slideNeighborsListFrom(kBotId);
+	addKbotToNeighborsList();
+	printf("[Kilobot ID%d] : (The age of the kilobot ID%d has been updated).\n", kilo_uid, kBotId);
+}
+
+//-------------------------------------------------------------------------------
+
 void isKbotInNeighborsList() {
 	uint8_t i;
 	mydata->flag_neighborAlreadyAdded = 0;
@@ -161,9 +169,7 @@ void isKbotInNeighborsList() {
 		if (mydata->rcvd_msg == mydata->list_neighbors[i].id) {
 			mydata->flag_neighborAlreadyAdded = 1;
 			printf("[Kilobot ID%d] : Kilobot ID%d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg);
-			slideNeighborsListFrom(mydata->rcvd_msg); // update kilobot age
-			addKbotToNeighborsList(); // update kilobot age
-			printf("[Kilobot ID%d] : (The age of the kilobot ID%d has been updated).\n", kilo_uid, mydata->rcvd_msg);
+			updateKbotAge(mydata->rcvd_msg);
 			break;
 		}
 	}
@@ -171,7 +177,7 @@ void isKbotInNeighborsList() {
 
 //-------------------------------------------------------------------------------
 
-// erase
+// kBotId removal and sliding following list_neighbors positions (from the oldest to the younger)
 void slideNeighborsListFrom(uint16_t kBotId) {
 	uint8_t i;
 	for (i = 0; i < mydata->nbNeighbors - 1; i++){	
@@ -184,6 +190,7 @@ void slideNeighborsListFrom(uint16_t kBotId) {
 	mydata->list_neighbors[i].age = NULL;
 
 	mydata->nbNeighbors = mydata->nbNeighbors - 1;
+	printf("[Kilobot ID%d] : Kilobot ID%d has been removed from list_neighbors.\n", kilo_uid, kBotId);
 }
 
 //-------------------------------------------------------------------------------
