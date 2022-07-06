@@ -47,7 +47,8 @@ typedef struct {
   message_t transmit_msg;
   uint8_t flag_messageSent;             // boolean
   message_t rcvd_message;
-  uint16_t rcvd_msg;
+  uint16_t rcvd_msg_id;
+  uint8_t rcvd_msg_isItAnchor;          // boolean
   uint8_t flag_newMessage;              // boolean
 
   // d01
