@@ -38,15 +38,7 @@ REGISTER_USERDATA(USERDATA)
 // FONCTIONS
 //-------------------------------------------------------------------------------
 
-void set_motion(motion_t new_motion){
-}
-
-
 void message_rx(message_t *m, distance_measurement_t *d) {
-}
-
-
-void setup_message(void) {
 }
 
 
