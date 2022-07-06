@@ -7,6 +7,9 @@
 //-------------------------------------------------------------------------------
 
 // d04_maxNumberNeighbors_NB.
+
+
+// RISCRIVERE !!!!!! BROUILLON
 // Each kilobot moves with a runAndTumble walk (d01), until it finds a position in the arèna
 // where the number of its neighbors is less than max_authorized_nbNeighbors.
 
