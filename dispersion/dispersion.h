@@ -67,7 +67,7 @@ typedef struct {
   uint8_t flag_neighborAlreadyAdded;    // boolean
   uint8_t flag_timeToAnchorIsRunning;   // boolean
   uint8_t flag_firstIteTimeToAnchor;    // boolean
-  uint8_t flag_iAmAnchor;                // boolean
+  uint8_t flag_iAmAnchor;               // boolean
 
   uint32_t lastReset_timeToAnchor;
 
