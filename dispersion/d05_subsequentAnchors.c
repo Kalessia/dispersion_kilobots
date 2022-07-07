@@ -6,15 +6,9 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d04_maxNumberNeighbors_NB.
 
 
-// RISCRIVERE !!!!!! BROUILLON
-// Each kilobot moves with a runAndTumble walk (d01), until it finds a position in the arèna
-// where the number of its neighbors is less than max_authorized_nbNeighbors.
-
-// Led white : the kilobot is looking for a good position and executes the runAndTumbleWalk
-// Led magenta : the kilobot has found a good position with nbNeighbors < max_authorized_nbNeighbors
+// Recommended parameters :
 
 
 
@@ -66,18 +60,30 @@ const uint8_t dist_min_between2Kbots = 55;
 
 // message transmission callback : returns the address of the message (transmit_msg) we declared
 message_t *message_tx() {
-	return &mydata->transmit_msg;
+	if (mydata->flag_iAmAnchor) {
+		return &mydata->transmit_msg1;
+	} else {
+		return &mydata->transmit_msg2;
+	}
 }
 
 //-------------------------------------------------------------------------------
 	
-// Initialize the message to send : each kilobots sends its ID (uint16_t)
-void setMsg_sendMyIdAndState() {
-	mydata->transmit_msg.type = NORMAL;
-	mydata->transmit_msg.data[0] = kilo_uid & 0xff;	// 0 low ID
-	mydata->transmit_msg.data[1] = kilo_uid >> 8;	// 1 high ID
-	mydata->transmit_msg.data[2] = mydata->flag_iAmAnchor;	
-	mydata->transmit_msg.crc = message_crc(&mydata->transmit_msg);
+// Initialize the messages to send : each kilobots sends its ID (uint16_t) and its flag_iAmAnchor value
+void setMsg_myId_iAmAnchor() {
+	mydata->transmit_msg1.type = NORMAL;
+	mydata->transmit_msg1.data[0] = kilo_uid & 0xff;	// 0 low ID
+	mydata->transmit_msg1.data[1] = kilo_uid >> 8;	// 1 high ID
+	mydata->transmit_msg1.data[2] = 1;	
+	mydata->transmit_msg1.crc = message_crc(&mydata->transmit_msg1);
+}
+
+void setMsg_myId_iAmNotAnchor() {
+	mydata->transmit_msg2.type = NORMAL;
+	mydata->transmit_msg2.data[0] = kilo_uid & 0xff;	// 0 low ID
+	mydata->transmit_msg2.data[1] = kilo_uid >> 8;	// 1 high ID
+	mydata->transmit_msg2.data[2] = 0;	
+	mydata->transmit_msg2.crc = message_crc(&mydata->transmit_msg2);
 }
 
 //-------------------------------------------------------------------------------
@@ -147,7 +153,7 @@ void keepWalking() {
 
 void addKbotToNeighborsList() {
 	printf("[Kilobot ID%d] : Adding kilobot ID%d to database...\n", kilo_uid, mydata->rcvd_msg_id);
-	if (mydata->nbNeighbors < MAX_AUTHORIZED_NBNEIGHBORS) {
+	if (mydata->nbNeighbors < DESIRED_NBNEIGHBORS) {
 		mydata->list_neighbors[mydata->nbNeighbors].id = mydata->rcvd_msg_id;
 		mydata->list_neighbors[mydata->nbNeighbors].age = kilo_ticks;
 		mydata->list_neighbors[mydata->nbNeighbors].distance = mydata->dist;
@@ -275,7 +281,7 @@ void setup() {
 	// d04
 	mydata->nbNeighbors = 0;
 	mydata->flag_neighborAlreadyAdded = 0;
-	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors = max_authorized_nbNeighbors
+	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors = DESIRED_NBNEIGHBORS
 	mydata->lastReset_timeToAnchor = 0;
 	mydata->flag_timeToAnchorIsRunning = 0;
 	mydata->flag_firstIteTimeToAnchor = 1;
@@ -287,7 +293,8 @@ void setup() {
 
 	// messages d05
 	mydata->flag_newMessage = 0;
-	setMsg_sendMyIdAndState();
+	setMsg_myId_iAmAnchor();
+	setMsg_myId_iAmNotAnchor();
 }
 
 //-------------------------------------------------------------------------------
@@ -315,12 +322,6 @@ void loop() {
 
 		mydata->flag_newMessage = 0;
 	}
-
-
-
-
-
-
 
 }
 

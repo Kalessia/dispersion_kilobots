@@ -13,9 +13,15 @@
 // to avoid its neighbor. dist is obtained with the estimate_distance fonction
 // on received messages).
 
+// Leds color code :
 // Led red : turn to the right or to the left (random choice)
 // Led green : straight
 // Led blue : turn right to avoid neighbor kilobot
+
+// Recommended parameters :
+// kticks_straightWalk = 500;
+// kticks_reorientationWalk = 500;
+// max_authorized_distance = 40;
 
 // Adaptation for real kilobots ideas : 
 //	- max_authorized_distance : min distance to detect the neighbor et react turning of 45°

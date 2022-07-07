@@ -7,9 +7,18 @@
 //-------------------------------------------------------------------------------
 
 // d02_testCommunication. 
-// Each kilobot broadcasts messages continuously, led cyan = message sent correctly = no collisions detected.
-// Robots close by receive the messages, led yellow = message received.
+// Each kilobot broadcasts messages continuously.
+// Robots close by receive the messages.
+
+// Leds color code :
+// Led cyan = message sent correctly = no collisions detected.
+// Led yellow = message received.
+
+// Recommended parameters :
+// kticks_straightWalk = 500;
+// kticks_reorientationWalk = 500;
 // Test this program with only 2 robots.
+
 
 
 

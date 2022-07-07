@@ -4,6 +4,11 @@
 //-------------------------------------------------------------------------------
 
 // d04
+#ifndef DESIRED_NBNEIGHBORS
+#define DESIRED_NBNEIGHBORS 3 // authorized values : from 0 to 255 neighbors
+#endif
+
+// d06
 #ifndef MAX_AUTHORIZED_NBNEIGHBORS
 #define MAX_AUTHORIZED_NBNEIGHBORS 3 // authorized values : from 0 to 255 neighbors
 #endif
@@ -45,6 +50,8 @@ typedef struct {
 
   // Messages variables
   message_t transmit_msg;
+  message_t transmit_msg1;
+  message_t transmit_msg2;
   uint8_t flag_messageSent;             // boolean
   message_t rcvd_message;
   uint16_t rcvd_msg_id;
@@ -71,6 +78,9 @@ typedef struct {
   uint8_t flag_iAmAnchor;               // boolean
 
   uint32_t lastReset_timeToAnchor;
+
+  // d06
+  uint8_t flag_isThereNeighborTooClose;   // boolean
 
 } USERDATA;
 

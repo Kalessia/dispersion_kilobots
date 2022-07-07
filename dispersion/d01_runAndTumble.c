@@ -8,9 +8,17 @@
 
 // d01_runAndTumble. 
 // Each kilobot starts moving at a different randomly chosen time, given by startingTime.
-// Led red = for a kticks_reorientationWalk period, kilobots turn and reorientate themselves,
+// For a kticks_reorientationWalk period, kilobots turn and reorientate themselves,
 // randomly on the right or on the left.
-// Led green = for a kticks_straightWalk period, kilobots walk straight.
+// For a kticks_straightWalk period, kilobots walk straight.
+
+// Leds color code :
+// Led red = kticks_reorientationWalk period, reorientation walk.
+// Led green = kticks_straightWalk period, straight walk.
+
+// Recommended parameters :
+// kticks_straightWalk = 500;
+// kticks_reorientationWalk = 500;
 
 // Adaptation for real kilobots ideas : 
 //	- kticks_straightWalk : time required to walk an half arena distance
