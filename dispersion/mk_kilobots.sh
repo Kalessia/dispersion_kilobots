@@ -13,6 +13,8 @@ make dispersion
 echo
 echo ">>> Kilobots dispersion - Getting .hex..."
 make hex
+
+mkdir build
 cp dispersion.hex build/$1.hex
 
 rm dispersion.c

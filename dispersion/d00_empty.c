@@ -19,11 +19,11 @@
 //-------------------------------------------------------------------------------
 
 #include <kilombo.h>
+#include <stdio.h> 		// for printf
 
 #ifdef SIMULATOR
 #include <jansson.h>
 json_t *json_state();
-//#include <stdio.h> 		// for printf
 #else
 #include <stdlib.h>
 //#include <avr/io.h>  	// for microcontroller register defs
