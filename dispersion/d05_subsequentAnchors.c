@@ -151,115 +151,6 @@ void keepWalking() {
 // NEIGHBORS MANAGEMENT FONCTIONS
 //-------------------------------------------------------------------------------
 
-void addKbotToNeighborsList() {
-	printf("[Kilobot ID%d] : Adding kilobot ID%d to database...\n", kilo_uid, mydata->rcvd_msg_id);
-	if (mydata->nbNeighbors < DESIRED_NBNEIGHBORS) {
-		mydata->list_neighbors[mydata->nbNeighbors].id = mydata->rcvd_msg_id;
-		mydata->list_neighbors[mydata->nbNeighbors].age = kilo_ticks;
-		mydata->list_neighbors[mydata->nbNeighbors].distance = mydata->dist;
-		mydata->nbNeighbors = mydata->nbNeighbors + 1;
-		printf("[Kilobot ID%d] : Kilobot ID%d has been added to list_neighbors.\n", kilo_uid, mydata->rcvd_msg_id);
-	} else {
-		printf("[Kilobot ID%d] : Impossible to add kilobot ID%d to list_neighbors, no more space in database!\n", kilo_uid, mydata->rcvd_msg_id, mydata->nbNeighbors);
-	}
-}
-
-//-------------------------------------------------------------------------------
-
-void updateKbot(uint16_t kBotId) {
-	slideNeighborsListFrom(kBotId); // remove old kBotId
-	addKbotToNeighborsList();		// add kBotId with updated values
-	printf("[Kilobot ID%d] : (The age of the kilobot ID%d has been updated).\n", kilo_uid, kBotId);
-}
-
-//-------------------------------------------------------------------------------
-
-void isKbotInNeighborsList() {
-	uint8_t i;
-	mydata->flag_neighborAlreadyAdded = 0;
-	for (i = 0; i < mydata->nbNeighbors; i++) {
-		if (mydata->rcvd_msg_id == mydata->list_neighbors[i].id) {
-			mydata->flag_neighborAlreadyAdded = 1;
-			printf("[Kilobot ID%d] : Kilobot ID%d is already in list_neighbors.\n", kilo_uid, mydata->rcvd_msg_id);
-			break;
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------
-
-// kBotId removal and sliding following list_neighbors positions (from the oldest to the younger)
-void slideNeighborsListFrom(uint16_t kBotId) {
-	uint8_t i;
-	for (i = 0; i < mydata->nbNeighbors - 1; i++){	
-		if (mydata->list_neighbors[i].id == kBotId) { // sliding starts from this index i, previous neighbors are inchanged
-			while (i < mydata->nbNeighbors - 1) { // sliding
-				mydata->list_neighbors[i].id = mydata->list_neighbors[i+1].id;
-				mydata->list_neighbors[i].age = mydata->list_neighbors[i+1].age;
-				mydata->list_neighbors[i].distance = mydata->list_neighbors[i+1].distance;
-				i++;
-			}
-			break;
-		}	
-	}
-	mydata->list_neighbors[i].id = NULL;
-	mydata->list_neighbors[i].age = NULL;
-	mydata->list_neighbors[i].distance = NULL;
-
-	mydata->nbNeighbors = mydata->nbNeighbors - 1;
-	printf("[Kilobot ID%d] : Kilobot ID%d has been removed from list_neighbors.\n", kilo_uid, kBotId);
-}
-
-//-------------------------------------------------------------------------------
-
-void setNbNeighborsLed() {
-	switch (mydata->nbNeighbors) {
-		case 0 :
-			set_color(RGB(3,3,3)); // white
-			break;
-		case 1 :
-			set_color(RGB(3,3,0)); // yellow 
-			break;
-		case 2 :
-			set_color(RGB(0,3,0)); // green
-			break;
-		case 3 :
-			set_color(RGB(0,3,3)); // cyan
-			break;
-		case 4 :
-			set_color(RGB(0,0,3)); // blue
-			break;
-		default :
-			set_color(RGB(3,0,3));  // magenta
-	}
-}
-
-//-------------------------------------------------------------------------------
-
-void showNeighborsList() {
-	if (mydata->nbNeighbors > 0) {
-		uint8_t i;
-		printf("[Kilobot ID%d] : list_neighbors.     \t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t| DISTANCE\t(Size = nbNeighbors = %d)\n", kilo_uid, mydata->nbNeighbors);
-		for (i = 0; i < mydata->nbNeighbors; i++) {
-			printf("\t\t\t\t\t| %d\t| %d\t\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age, mydata->list_neighbors[i].distance);
-		}	
-	}
-}
-
-
-
-
-
-//-------------------------------------------------------------------------------
-// 
-//-------------------------------------------------------------------------------
-
-void amIAnchor(){
-	if (kilo_uid == 0) {
-		mydata->flag_iAmAnchor = 1;
-	}
-}
-
 
 
 
@@ -318,6 +209,7 @@ void loop() {
 
 		if ((mydata->rcvd_msg_isItAnchor) && (mydata->dist > dist_min_between2Kbots)) {
 			mydata->flag_iAmAnchor = 1;
+			printf("[Kilobot ID%d] : I am anchor !\n", kilo_uid);
 		}
 
 		mydata->flag_newMessage = 0;
