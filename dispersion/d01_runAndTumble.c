@@ -96,12 +96,15 @@ void runAndTumbleWalk() {
 
 void setup() {
 
+	// Verbose : set flag_verbose=1 if you want to see execution details on terminal, flag_verbose=0 if not.
+	mydata->flag_verbose = 1;
+
 	// Initialize the random generator
     while(get_voltage() == -1);
     rand_seed(rand_hard() + kilo_uid);
 
 	mydata->lastReset = rand_soft(); // starting time
-	printf("startingTime : %d\n", mydata->lastReset);
+	if (mydata->flag_verbose) { printf("startingTime : %d\n", mydata->lastReset); }
 	mydata->currentDirection = 1;
 }
 

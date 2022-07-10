@@ -6,9 +6,26 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
+// d05_subsequentAnchors.
+// This code implements a basic behavior to develop in next algorithms.
+// At the beginning, there is only one kilobot-anchor : an anchor is a kilobot that has finished
+// its algorithm et doesn't react anymore to new signals.
+// Each kilobot broadcasts continuously its state (mydata->flag_iAmAnchor=1 or mydata->flag_iAmAnchor=0).
+// Each NOT-anchor kilobot moves with a runAndTumble avoiding walk (d03) until it finds a kilobot-anchor
+// at a good distance (dist_min_between2Kbots), then it stops and becomes anchor itself.
 
+// Leds color code :
+// Led white : NOT-anchor kilobot
+// Led magenta : anchor-kilobot
 
-// Recommended parameters :
+// Recommended parameters (circular arena disk.csv) :
+/*	- const uint32_t kticks_straightWalk = 500;
+	  const uint32_t kticks_reorientationWalk = 500;
+	  const uint32_t kticks_max_authorizedNeighborAge = 1000;
+	  const uint32_t kticks_max_timeToAnchor = 1100;
+	  const uint8_t dist_max_runAvoiderBehavior = 35;
+	  const uint8_t dist_min_between2Kbots = 55; */
+// NB : kticks_max_timeToAnchor > kticks_max_authorizedNeighborAge, to check if old neighbors are still there
 
 
 
@@ -44,8 +61,8 @@ REGISTER_USERDATA(USERDATA)
 // periods expressed in kiloticks
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint32_t kticks_max_authorizedNeighborAge = 2000; // a neighborg has this age or less
-const uint32_t kticks_max_timeToAnchor = 2100;
+const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this age or less
+const uint32_t kticks_max_timeToAnchor = 1100;
 
 // distances expressed in mm
 const uint8_t dist_max_runAvoiderBehavior = 35;
@@ -148,9 +165,14 @@ void keepWalking() {
 
 
 //-------------------------------------------------------------------------------
-// NEIGHBORS MANAGEMENT FONCTIONS
+// 
 //-------------------------------------------------------------------------------
 
+void amIAnchor(){
+	if (kilo_uid == 0) {
+		mydata->flag_iAmAnchor = 1;
+	}
+}
 
 
 
@@ -160,6 +182,9 @@ void keepWalking() {
 //-------------------------------------------------------------------------------
 
 void setup() {
+
+	// Verbose : set flag_verbose=1 if you want to see execution details on terminal, flag_verbose=0 if not.
+	mydata->flag_verbose = 0;
 
 	// Initialize the random generator
     while(get_voltage() == -1);
@@ -175,15 +200,13 @@ void setup() {
 	// d04
 	mydata->nbNeighbors = 0;
 	mydata->flag_neighborAlreadyAdded = 0;
-	mydata->flag_correctNbNeighbors = 0;	// flag=1 means that nbNeighbors = DESIRED_NBNEIGHBORS
 	mydata->lastReset_timeToAnchor = 0;
 	mydata->flag_timeToAnchorIsRunning = 0;
-	mydata->flag_firstIteTimeToAnchor = 1;
 	mydata->flag_iAmAnchor = 0;
 
 	//d05
 	mydata->flag_iAmAnchor = 0;
-	//amIAnchor();	<-------------------------------------- a initialiser!!!!!!!!!!!!!!!!!!!!
+	amIAnchor();
 
 	// messages d05
 	mydata->flag_newMessage = 0;
@@ -194,7 +217,7 @@ void setup() {
 //-------------------------------------------------------------------------------
 
 void loop() {
-
+	
 	if (mydata->flag_iAmAnchor) {
 		// Keep the current position
 		set_color(RGB(3,0,3)); // magenta
@@ -208,11 +231,11 @@ void loop() {
 	
 	
 	if (mydata->flag_newMessage) {
-		printf("[Kilobot ID%d] : New message ! Kilobot ID%d has been detected at distance %d. isItAnchor = %d.\n", kilo_uid, mydata->rcvd_msg_id, mydata->dist, mydata->rcvd_msg_isItAnchor);
+		if (mydata->flag_verbose) { printf ("[Kilobot ID%d] : New message ! Kilobot ID%d has been detected at distance %d. isItAnchor = %d.\n", kilo_uid, mydata->rcvd_msg_id, mydata->dist, mydata->rcvd_msg_isItAnchor); }
 
 		if ((mydata->rcvd_msg_isItAnchor) && (mydata->dist > dist_min_between2Kbots)) {
 			mydata->flag_iAmAnchor = 1;
-			printf("[Kilobot ID%d] : I am anchor !\n", kilo_uid);
+			if (mydata->flag_verbose) { printf ("[Kilobot ID%d] : I am anchor !\n", kilo_uid); }
 		}
 
 		mydata->flag_newMessage = 0;

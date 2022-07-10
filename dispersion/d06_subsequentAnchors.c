@@ -295,6 +295,9 @@ void amIAnchor(){
 
 void setup() {
 
+	// Verbose : set flag_verbose=1 if you want to see execution details on terminal, flag_verbose=0 if not.
+	mydata->flag_verbose = 1;
+	
 	// Initialize the random generator
     while(get_voltage() == -1);
     rand_seed(rand_hard() + kilo_uid);
