@@ -14,7 +14,7 @@
 // Led cyan = message sent correctly = no collisions detected.
 // Led yellow = message received.
 
-// Recommended parameters :
+// Recommended parameters (circular arena disk.csv) :
 // kticks_straightWalk = 500;
 // kticks_reorientationWalk = 500;
 // Test this program with only 2 robots.
@@ -89,8 +89,8 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if(kilo_ticks % (mydata->startingTime + (kticks_straightWalk + kticks_reorientationWalk)) == 0) {
-		mydata->lastReset = kilo_ticks;
+	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
@@ -114,8 +114,9 @@ void runAndTumbleWalk() {
 
 void setup() {
 
-	mydata->flag_messageSent = 0; // boolean
-	mydata->flag_newMessage = 0; // boolean
+	// Initialize the random generator
+    while(get_voltage() == -1);
+    rand_seed(rand_hard() + kilo_uid);
 
 	// Initialize transmit_msg
 	mydata->transmit_msg.type = NORMAL;
@@ -123,9 +124,10 @@ void setup() {
 	mydata->transmit_msg.crc = message_crc(&mydata->transmit_msg);
 
 	// Initialization variables
-	mydata->lastReset = 0;
-	mydata->startingTime = rand_hard();
-	printf("startingTime : %d\n", mydata->startingTime);
+	mydata->flag_messageSent = 0;
+	mydata->flag_newMessage = 0;
+	
+	mydata->lastReset = rand_soft(); // starting time
 	mydata->currentDirection = 1;
 }
 

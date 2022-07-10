@@ -107,8 +107,8 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if(kilo_ticks % (mydata->startingTime + (kticks_straightWalk + kticks_reorientationWalk)) == 0) {
-		mydata->lastReset = kilo_ticks;
+	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
@@ -161,9 +161,12 @@ void keepWalking() {
 
 void setup() {
 
+	// Initialize the random generator
+    while(get_voltage() == -1);
+    rand_seed(rand_hard() + kilo_uid);
+
 	// d01
-	mydata->lastReset = 0;
-	mydata->startingTime = rand_hard();
+	mydata->lastReset = rand_soft(); // starting time
 	mydata->currentDirection = 1;
 
 	// d03
@@ -180,7 +183,7 @@ void setup() {
 
 	//d05
 	mydata->flag_iAmAnchor = 0;
-	amIAnchor();
+	//amIAnchor();	<-------------------------------------- a initialiser!!!!!!!!!!!!!!!!!!!!
 
 	// messages d05
 	mydata->flag_newMessage = 0;

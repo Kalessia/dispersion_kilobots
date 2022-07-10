@@ -60,6 +60,10 @@ void message_rx(message_t *m, distance_measurement_t *d) {
 //-------------------------------------------------------------------------------
 
 void setup() {
+	
+	// Initialize the random generator
+    while(get_voltage() == -1);
+    rand_seed(rand_hard() + kilo_uid);
 }
 
 

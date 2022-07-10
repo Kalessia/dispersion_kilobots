@@ -16,7 +16,7 @@
 // Led red = kticks_reorientationWalk period, reorientation walk.
 // Led green = kticks_straightWalk period, straight walk.
 
-// Recommended parameters :
+// Recommended parameters (circular arena disk.csv) :
 // kticks_straightWalk = 500;
 // kticks_reorientationWalk = 500;
 
@@ -69,14 +69,17 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if(kilo_ticks % (mydata->startingTime + (kticks_straightWalk + kticks_reorientationWalk)) == 0) {
-		mydata->lastReset = kilo_ticks;
+	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
+		if (kilo_uid == 0) {
+			printf("[Kilobot ID%d] : %d.\n", kilo_uid, mydata->lastReset);
+		}
 	}
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
 		set_color(RGB(3,0,0)); 	// red
-		if (mydata->currentDirection == 0){
+		if (mydata->currentDirection == 0) {
 			set_motors(0, kilo_turn_right);
 		} else {
 			set_motors(kilo_turn_left, 0);
@@ -95,9 +98,13 @@ void runAndTumbleWalk() {
 //-------------------------------------------------------------------------------
 
 void setup() {
-	mydata->lastReset = 0;
-	mydata->startingTime = rand_hard();
-	printf("startingTime : %d\n", mydata->startingTime);
+
+	// Initialize the random generator
+    while(get_voltage() == -1);
+    rand_seed(rand_hard() + kilo_uid);
+
+	mydata->lastReset = rand_soft(); // starting time
+	printf("startingTime : %d\n", mydata->lastReset);
 	mydata->currentDirection = 1;
 }
 

@@ -60,7 +60,7 @@ typedef struct {
 
   // d01
   uint16_t lastReset;
-  uint8_t startingTime;
+  uint8_t flag_firstIteTimeToReset;    // boolean
   uint8_t currentDirection;
 
   // d03

@@ -9,16 +9,16 @@
 // d03_runAndTumbleAvoider.
 // Each kilobot broadcasts messages continuosly.
 // During the runAndTumble walk (d01), if the current kilobot meets another kilobot
-// at dist < max_authorized_distance, then the current kilobot turns on the right (led blue)
-// to avoid its neighbor. dist is obtained with the estimate_distance fonction
-// on received messages).
+// at dist < max_authorized_distance, then the current kilobot turns on the right
+// to avoid its neighbor. 'dist' is obtained with the estimate_distance fonction
+// on received messages.
 
 // Leds color code :
-// Led red : turn to the right or to the left (random choice)
-// Led green : straight
+// Led red : reorientation walk
+// Led green : straight walk
 // Led blue : turn right to avoid neighbor kilobot
 
-// Recommended parameters :
+// Recommended parameters (circular arena disk.csv) :
 // kticks_straightWalk = 500;
 // kticks_reorientationWalk = 500;
 // max_authorized_distance = 40;
@@ -92,8 +92,8 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if(kilo_ticks % (mydata->startingTime + (kticks_straightWalk + kticks_reorientationWalk)) == 0) {
-		mydata->lastReset = kilo_ticks;
+	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
@@ -130,7 +130,9 @@ void avoider() {
 
 void setup() {
 
-	mydata->flag_newMessage = 0; 	// boolean
+	// Initialize the random generator
+    while(get_voltage() == -1);
+    rand_seed(rand_hard() + kilo_uid);
 
 	// Initialize transmit_msg
 	mydata->transmit_msg.type = NORMAL;
@@ -138,9 +140,8 @@ void setup() {
 	mydata->transmit_msg.crc = message_crc(&mydata->transmit_msg);
 
 	// Initialization variables
-	mydata->lastReset = 0;
-	mydata->startingTime = rand_hard();
-	printf("startingTime : %d\n", mydata->startingTime);
+	mydata->flag_newMessage = 0;
+	mydata->lastReset = rand_soft(); // starting time
 	mydata->currentDirection = 1;
 	mydata->dist = 100;
 }
