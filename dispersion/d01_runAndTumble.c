@@ -72,9 +72,6 @@ void runAndTumbleWalk() {
 	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
 		mydata->lastReset = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
-		if (kilo_uid == 0) {
-			printf("[Kilobot ID%d] : %d.\n", kilo_uid, mydata->lastReset);
-		}
 	}
 	
 	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {

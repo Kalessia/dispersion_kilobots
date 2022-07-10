@@ -45,7 +45,7 @@ const uint32_t kticks_max_authorizedNeighborAge = 2000; // a neighborg has this 
 const uint32_t kticks_max_timeToAnchor = 3000;
 
 // distances expressed in mm
-const uint8_t dist_max_runAvoiderBehavior = 40;
+const uint8_t dist_max_runAvoiderBehavior = 35;
 const uint8_t dist_min_between2Kbots = 60;
 
 

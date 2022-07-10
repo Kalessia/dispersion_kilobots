@@ -11,7 +11,7 @@
     "commsRadius" : 70,
     "showComms" : 1.0,
     "showCommsRadius" : 0,
-    "distributePercent" : 1.0,
+    "distributePercent" : 0.3,
     "displayWidth"  : 700,
     "displayHeight" : 700,
     "displayWidthPercent" : 100,

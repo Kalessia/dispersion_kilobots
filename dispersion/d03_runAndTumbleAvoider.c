@@ -21,10 +21,10 @@
 // Recommended parameters (circular arena disk.csv) :
 // kticks_straightWalk = 500;
 // kticks_reorientationWalk = 500;
-// max_authorized_distance = 40;
+// max_authorized_distance = 35;
 
 // Adaptation for real kilobots ideas : 
-//	- max_authorized_distance : min distance to detect the neighbor et react turning of 45°
+//	- max_authorized_distance : min distance to detect the neighbor and start turning
 
 
 
@@ -59,7 +59,7 @@ REGISTER_USERDATA(USERDATA)
 
 const uint32_t kticks_straightWalk = 500;
 const uint32_t kticks_reorientationWalk = 500;
-const uint8_t max_authorized_distance = 40;	// exprimé en mm
+const uint8_t max_authorized_distance = 35;	// exprimé en mm
 
 
 
@@ -114,7 +114,7 @@ void runAndTumbleWalk() {
 
 
 // If the current kilobot meets another kilobot at dist < max_authorized_distance,
-// then the current kilobot turns right (led blue)
+// then the current kilobot turns right
 void avoider() {
 	set_color(RGB(0,0,3));	// blue
 	spinup_motors();

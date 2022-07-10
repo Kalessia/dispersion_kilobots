@@ -5,7 +5,7 @@
 
 // d04
 #ifndef DESIRED_NBNEIGHBORS
-#define DESIRED_NBNEIGHBORS 3 // authorized values : from 0 to 255 neighbors
+#define DESIRED_NBNEIGHBORS 2 // authorized values : from 0 to 255 neighbors
 #endif
 
 // d06

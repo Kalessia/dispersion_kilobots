@@ -7,14 +7,22 @@
 //-------------------------------------------------------------------------------
 
 // d04_fixedNbNeighbors_NB.
-// Each kilobot moves with a runAndTumble walk (d01), until it finds a position in the arèna
-// where the number of its nbNeighbors = DESIRED_NBNEIGHBORS.
+// Each kilobot moves with a runAndTumble avoiding walk (d03), until it finds a position in the arèna
+// where the number of its nbNeighbors = DESIRED_NBNEIGHBORS and gets blue.
+// After a kticks_max_timeToAnchor period, each kilobot turned on blue checks its situation : 
+// if it has the same neighbors at a good distance (dist_min_between2Kbots), then it turns on magenta and becomes 
+// an 'anchor' definitively. An anchor is a kilobot that has finished its algorithm et doesn't react anymore to new signals.
 
+// Leds color code :
 // Led white : the kilobot is looking for a good position and executes the runAndTumbleWalk
+// Led blue : kticks_max_timeToAnchor period
 // Led magenta : the kilobot has found a good position with nbNeighbors = DESIRED_NBNEIGHBORS
 
-// Parameters :
-//	- DESIRED_NBNEIGHBORS 3
+// Recommended parameters (circular arena disk.csv) :
+//	- DESIRED_NBNEIGHBORS 2
+//	- kticks_max_timeToAnchor > kticks_max_authorizedNeighborAge, to check if old neighbors are still there
+
+
 
 
 //-------------------------------------------------------------------------------
@@ -52,7 +60,7 @@ const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this 
 const uint32_t kticks_max_timeToAnchor = 1100;
 
 // distances expressed in mm
-const uint8_t dist_max_runAvoiderBehavior = 40;
+const uint8_t dist_max_runAvoiderBehavior = 35;
 const uint8_t dist_min_between2Kbots = 55;
 
 
