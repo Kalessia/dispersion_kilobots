@@ -15,7 +15,7 @@
 	>		Procédure pour tuer les deux processus. Sur terminal, utiliser les commandes :
 	>		- ps ax|grep kilogui (on obtient les codes des processus actifs)
 	>		- kill -q (code sudo) (code sudo kilogui)   
-	NB. Nous n'avons pas vérifié que la kiloGUI installée à partir du code source fonctionne mieux que la kiloGUI installée par fichier executable (Ubuntu, Win, Mac). 
+	NB. Nous n'avons pas vérifié que la kiloGUI installée à partir du code source fonctionne mieux que la kiloGUI installée par fichier executable (Debian, Windows, Mac). 
 	
 - **avr-gcc** : n'importe quelle version semble bien fonctionner. Nous avons testé les versions v5, v10 et v12.
 
