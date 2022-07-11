@@ -19,6 +19,8 @@
 // Led magenta : anchor-kilobot
 
 // Recommended parameters (circular arena disk.csv) :
+//	- DESIRED_NBNEIGHBORS 2 (dispersion.h)
+// 	- nBots : 10 (simulation.json)
 /*	- const uint32_t kticks_straightWalk = 500;
 	  const uint32_t kticks_reorientationWalk = 500;
 	  const uint32_t kticks_max_authorizedNeighborAge = 1000;
