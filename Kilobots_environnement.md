@@ -6,7 +6,7 @@
 - **Flashage** : utiliser les documents fournis par Yoones, disponibles dans le répertoire *flashage*.
 	>		controller.hex, pour flasher la douche  
     >		bootloader.hex, pour flasher les kilobots  
-	La procédure de flashage complète est disponible sur le site https://diode.group.shef.ac.uk/kilobots/index.php/Kilobot_Firmware, et résumée dans le fichier *procedure_flashage* dans le répertoire *flashage*. Les fichiers de flashage doivent être de la même version que la kilolib.
+	La procédure de flashage complète est disponible sur le site https://diode.group.shef.ac.uk/kilobots/index.php/Kilobot_Firmware, et résumée dans le fichier *procedure_flashage* dans le répertoire *flashage*.
 	
 - **KiloGUI** : nous avons installé celle sur GirHub à l’adresse https://github.com/acornejo/kilogui/releases (*Source code*). Nous avons installé le *FTDI driver* via la librairie *libftdi1*, pour utiliser la kiloGUI en mode FTDI. 
 	>		Procédure pour lancer la kiloGUI :
