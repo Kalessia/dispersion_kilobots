@@ -14,9 +14,10 @@
 	NB. Ne surtout pas utiliser la commande « sudo kilogui &disown ». Si c’est le cas, il faut tuer les processus *sudo* et *sudo kilogui*. 
 	>		Procédure pour tuer les deux processus :
 	>		- ps ax|grep kilogui (on obtient les codes des processus actifs)
-	>		- kill -q (code sudo) (code sudo kilogui)    
+	>		- kill -q (code sudo) (code sudo kilogui)   
+	NB. Nous n'avons pas vérifié que la kiloGUI installée à partir du code source fonctionne mieux que la kiloGUI installée par fichier executable (Ubuntu, Win, Mac). 
 	
-- **avr-gcc** : n'importe quelle version semble bien fonctionner. 
+- **avr-gcc** : n'importe quelle version semble bien fonctionner. Nous avons testé les versions v5, v10 et v12.
 
 - **Codes à tester** : dans le répertoire *algorithmes* il y a trois codes à tester. Parmi les trois, le fichier *limmswarm.hex* est le plus complexe.
 
