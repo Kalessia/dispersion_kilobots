@@ -89,12 +89,12 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
-		mydata->lastReset = kilo_ticks - 1;
+	if ((kilo_ticks > mydata->lastReset_runAndTumble + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset_runAndTumble = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
-	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
+	if (kilo_ticks < mydata->lastReset_runAndTumble + kticks_reorientationWalk) {
 		if (mydata->currentDirection == 0){
 			set_motors(0, kilo_turn_right);
 		} else {
@@ -130,7 +130,7 @@ void setup() {
 	mydata->flag_messageSent = 0;
 	mydata->flag_newMessage = 0;
 	
-	mydata->lastReset = rand_soft(); // starting time
+	mydata->lastReset_runAndTumble = rand_soft(); // starting time
 	mydata->currentDirection = 1;
 }
 

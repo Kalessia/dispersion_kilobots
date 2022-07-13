@@ -69,12 +69,12 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
-		mydata->lastReset = kilo_ticks - 1;
+	if ((kilo_ticks > mydata->lastReset_runAndTumble + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset_runAndTumble = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
-	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
+	if (kilo_ticks < mydata->lastReset_runAndTumble + kticks_reorientationWalk) {
 		set_color(RGB(3,0,0)); 	// red
 		if (mydata->currentDirection == 0) {
 			set_motors(0, kilo_turn_right);
@@ -103,8 +103,8 @@ void setup() {
     while(get_voltage() == -1);
     rand_seed(rand_hard() + kilo_uid);
 
-	mydata->lastReset = rand_soft(); // starting time
-	if (mydata->flag_verbose) { printf("startingTime : %d\n", mydata->lastReset); }
+	mydata->lastReset_runAndTumble = rand_soft(); // starting time
+	if (mydata->flag_verbose) { printf("startingTime : %d\n", mydata->lastReset_runAndTumble); }
 	mydata->currentDirection = 1;
 }
 

@@ -46,7 +46,7 @@ typedef struct {
   uint8_t flag_newMessage;              // boolean
 
   // d01
-  uint16_t lastReset;
+  uint32_t lastReset_runAndTumble;
   uint8_t flag_firstIteTimeToReset;    // boolean
   uint8_t currentDirection;
 

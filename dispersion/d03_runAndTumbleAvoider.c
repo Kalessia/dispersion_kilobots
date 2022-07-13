@@ -92,12 +92,12 @@ void runAndTumbleWalk() {
 	
 	spinup_motors();
 	
-	if ((kilo_ticks > mydata->lastReset + kticks_straightWalk + kticks_reorientationWalk)) {
-		mydata->lastReset = kilo_ticks - 1;
+	if ((kilo_ticks > mydata->lastReset_runAndTumble + kticks_straightWalk + kticks_reorientationWalk)) {
+		mydata->lastReset_runAndTumble = kilo_ticks - 1;
 		mydata->currentDirection = rand_soft() % 2;
 	}
 	
-	if (kilo_ticks < mydata->lastReset + kticks_reorientationWalk) {
+	if (kilo_ticks < mydata->lastReset_runAndTumble + kticks_reorientationWalk) {
 		// Turn right or turn left
 		set_color(RGB(3,0,0)); 	// red
 		if (mydata->currentDirection == 0){
@@ -144,7 +144,7 @@ void setup() {
 
 	// Initialization variables
 	mydata->flag_newMessage = 0;
-	mydata->lastReset = rand_soft(); // starting time
+	mydata->lastReset_runAndTumble = rand_soft(); // starting time
 	mydata->currentDirection = 1;
 	mydata->dist = 100;
 }
