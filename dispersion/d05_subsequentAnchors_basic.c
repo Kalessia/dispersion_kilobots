@@ -6,13 +6,17 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d05_subsequentAnchors.
+// d05_subsequentAnchors_basic.
 // This code implements a basic behavior to develop in next algorithms.
 // At the beginning, there is only one kilobot-anchor : an anchor is a kilobot that has finished
 // its algorithm et doesn't react anymore to new signals.
 // Each kilobot broadcasts continuously its state (mydata->flag_iAmAnchor=1 or mydata->flag_iAmAnchor=0).
 // Each NOT-anchor kilobot moves with a runAndTumble avoiding walk (d03) until it finds a kilobot-anchor
 // at a good distance (dist_min_between2Kbots), then it stops and becomes anchor itself.
+
+// NB. The main idea of the subsequent anchoring is taken from the article 
+// Bayert, Jonathan, and Sami Khorbotly. "Robotic Swarm Dispersion Using Gradient Descent Algorithm." 
+// 2019 IEEE International Symposium on Robotic and Sensors Environments (ROSE). IEEE, 2019.
 
 // Leds color code :
 // Led white : NOT-anchor kilobot

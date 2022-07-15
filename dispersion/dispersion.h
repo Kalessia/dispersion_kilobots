@@ -9,7 +9,7 @@
 
 // d06
 #ifndef MAX_AUTHORIZED_NBNEIGHBORS
-#define MAX_AUTHORIZED_NBNEIGHBORS 3 // authorized values : from 0 to 255 neighbors
+#define MAX_AUTHORIZED_NBNEIGHBORS 10 // authorized values : from 0 to 255 neighbors
 #endif
 
 // d
@@ -64,6 +64,7 @@ typedef struct {
 
   // d06
   uint8_t flag_isThereNeighborTooClose;   // boolean
+  uint8_t flag_electionTimeIsRunning;     // boolean
 
 } USERDATA;
 
