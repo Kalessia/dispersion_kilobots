@@ -22,20 +22,16 @@
 
 // Recommended parameters (circular arena disk.csv) :
 //	- DESIRED_NBNEIGHBORS 2 (dispersion.h)
-/*	const uint32_t kticks_straightWalk = 500;
-	const uint32_t kticks_reorientationWalk = 500;
-	const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this age or less
-	const uint32_t kticks_max_timeToAnchor = 1100;
-	const uint32_t kticks_max_electionTime = 5000;
-	const uint32_t kticks_min_timeToCollectNeighbors = 3000;
-	const uint8_t dist_max_runAvoiderBehavior = 35;
-	const uint8_t dist_min_between2Kbots = 55; */
+//	- MAX_AUTHORIZED_NBNEIGHBORS 10 (dispersion.h)
+//	- nBots : 10 (simulation.json)
+//	- const uint32_t kticks_max_electionTime = 5000;
+//	- const uint32_t kticks_min_timeToCollectNeighbors = 3000;
 // NB : kticks_max_timeToAnchor > kticks_max_authorizedNeighborAge, to check if old neighbors are still there
 
 // Observations :
 // 	- Each kilobot acts for its own situation, so there is a high probability to get NOT CONNECTED graphs
 //	- If the density of kilobots in the arena is too high, it is possible to not determine any anchor : algorithms
-//	  d07_initAnchors_plusAlea and d08_initAnchors_plusDet try to fix this issue.
+//	  d07_initAnchors_plusAlea and d08_initAnchors_plusCrowd try to fix this issue.
 
 
 
