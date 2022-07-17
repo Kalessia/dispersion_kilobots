@@ -9,7 +9,7 @@
 
 // d06
 #ifndef MAX_AUTHORIZED_NBNEIGHBORS
-#define MAX_AUTHORIZED_NBNEIGHBORS 10 // authorized values : from 0 to 255 neighbors
+#define MAX_AUTHORIZED_NBNEIGHBORS 10 // maximal number of neighbors estimated. Authorized values : from 0 to 255 neighbors
 #endif
 
 // d
@@ -28,6 +28,8 @@ typedef struct {
   uint16_t id;
   uint16_t age;
   uint8_t distance;
+  uint8_t flag_isItAnchor;
+  uint8_t flag_isItPreAnchor; // d10
 } neighbor_t;
 
 
@@ -39,15 +41,19 @@ typedef struct {
   message_t transmit_msg;
   message_t transmit_msg1;
   message_t transmit_msg2;
-  uint8_t flag_messageSent;             // boolean
+  message_t transmit_msg3;
   message_t rcvd_message;
+
+  uint8_t flag_newMessage;              // boolean
+  uint8_t flag_messageSent;             // boolean
+
   uint16_t rcvd_msg_id;
   uint8_t rcvd_msg_isItAnchor;          // boolean
-  uint8_t flag_newMessage;              // boolean
+  uint8_t rcvd_msg_isItPreAnchor;       // boolean
 
   // d01
   uint32_t lastReset_runAndTumble;
-  uint8_t flag_firstIteTimeToReset;    // boolean
+  uint8_t flag_firstIteTimeToReset;     // boolean
   uint8_t currentDirection;
 
   // d03
@@ -63,8 +69,12 @@ typedef struct {
   neighbor_t list_neighbors[MAX_AUTHORIZED_NBNEIGHBORS]; // list of detected different neighbors
 
   // d06
-  uint8_t flag_isThereNeighborTooClose;   // boolean
-  uint8_t flag_electionTimeIsRunning;     // boolean
+  uint8_t flag_isThereNeighborTooClose;  // boolean
+  uint8_t flag_electionTimeIsRunning;    // boolean
+  uint8_t nbAnchors;
+
+  // d10
+  uint8_t flag_iAmPreAnchor;             // boolean
 
 } USERDATA;
 
