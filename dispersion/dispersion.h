@@ -29,7 +29,7 @@ typedef struct {
   uint16_t age;
   uint8_t distance;
   uint8_t flag_isItAnchor;
-  uint8_t flag_isItPreAnchor; // d10
+  uint8_t flag_isItPreAnchor; 	 // d10
 } neighbor_t;
 
 
@@ -75,6 +75,8 @@ typedef struct {
 
   // d10
   uint8_t flag_iAmPreAnchor;             // boolean
+  uint8_t nbPreAnchors;
+  uint32_t lastReset_timeToWait;
 
 } USERDATA;
 

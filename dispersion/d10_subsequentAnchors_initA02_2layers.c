@@ -81,7 +81,7 @@ void setMsg_myId_iAmAnchor() {
 	mydata->transmit_msg1.data[0] = kilo_uid & 0xff; // 0 low ID
 	mydata->transmit_msg1.data[1] = kilo_uid >> 8;	 // 1 high ID
 	mydata->transmit_msg1.data[2] = 1;
-	mydata->transmit_msg2.data[3] = 0;
+	mydata->transmit_msg1.data[3] = 0;
 	mydata->transmit_msg1.crc = message_crc(&mydata->transmit_msg1);
 }
 
@@ -112,7 +112,6 @@ void message_rx(message_t *msg, distance_measurement_t *d) {
 	mydata->dist_measure = *d;
 	mydata->dist = estimate_distance(&mydata->dist_measure);
 	mydata->flag_newMessage = 1; 	// flag=1 means that a new message has arrived
-	printf("%d, %d, %d, %d\n", msg->data[0], msg->data[1], msg->data[2], msg->data[3]);
 }
 
 
@@ -180,6 +179,8 @@ void addKbotToNeighborsList() {
 		mydata->list_neighbors[mydata->nbNeighbors].flag_isItPreAnchor = mydata->rcvd_msg_isItPreAnchor;
 
 		mydata->nbAnchors = mydata->nbAnchors + mydata->list_neighbors[mydata->nbNeighbors].flag_isItAnchor;
+		mydata->nbPreAnchors = mydata->nbPreAnchors + mydata->list_neighbors[mydata->nbNeighbors].flag_isItPreAnchor;
+
 		mydata->nbNeighbors = mydata->nbNeighbors + 1;
 
 		if (mydata->flag_verbose) { printf("[Kilobot ID%d] : Kilobot ID%d has been added to list_neighbors.\n", kilo_uid, mydata->rcvd_msg_id); }
@@ -200,6 +201,7 @@ void removeAllNeighbors() {
 		mydata->list_neighbors[i].flag_isItPreAnchor = NULL;
 	}
 	mydata->nbAnchors = 0;
+	mydata->nbPreAnchors = 0;
 	mydata->nbNeighbors = 0;
 	if (mydata->flag_verbose) { printf("[Kilobot ID%d] : All neighbors have been removed from list_neighbors.\n", kilo_uid); }
 }
@@ -241,6 +243,7 @@ void slideNeighborsListFrom(uint16_t kBotId) {
 	for (i = 0; i < mydata->nbNeighbors - 1; i++){	
 		if (mydata->list_neighbors[i].id == kBotId) { // sliding starts from this index i, previous neighbors are inchanged
 			mydata->nbAnchors = mydata->nbAnchors - mydata->list_neighbors[i].flag_isItAnchor;
+			mydata->nbPreAnchors = mydata->nbPreAnchors - mydata->list_neighbors[i].flag_isItPreAnchor;
 			check = 1;
 			while (i < mydata->nbNeighbors - 1) { // sliding
 				mydata->list_neighbors[i].id = mydata->list_neighbors[i+1].id;
@@ -256,6 +259,7 @@ void slideNeighborsListFrom(uint16_t kBotId) {
 
 	if (!check) {
 		mydata->nbAnchors = mydata->nbAnchors - mydata->list_neighbors[i].flag_isItAnchor;		
+		mydata->nbPreAnchors = mydata->nbPreAnchors - mydata->list_neighbors[i].flag_isItPreAnchor;		
 	}
 	mydata->list_neighbors[i].id = NULL;
 	mydata->list_neighbors[i].age = NULL;
@@ -307,7 +311,7 @@ void setNbNeighborsLed() {
 void showNeighborsList() {
 	if (mydata->nbNeighbors > 0) {
 		uint8_t i;
-		if (mydata->flag_verbose) { printf("[Kilobot ID%d] : list_neighbors.     \t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t| DISTANCE\t| ISITANCHOR\t| ISITPREANCHOR\t(Size = nbNeighbors = %d) \t(nbAnchors = %d)\n", kilo_uid, mydata->nbNeighbors, mydata->nbAnchors); }
+		if (mydata->flag_verbose) { printf("[Kilobot ID%d] : list_neighbors.     \t| POS\t| NEIGHBOR_ID\t| CAPTURE_TIME\t| DISTANCE\t| ISITANCHOR\t| ISITPREANCHOR\t(Size = nbNeighbors = %d) (nbAnchors = %d)\n", kilo_uid, mydata->nbNeighbors, mydata->nbAnchors); }
 		for (i = 0; i < mydata->nbNeighbors; i++) {
 			if (mydata->flag_verbose) { printf("\t\t\t\t\t| %d\t| %d\t\t| %d\t\t| %d\t\t| %d\t\t| %d\n", i, mydata->list_neighbors[i].id, mydata->list_neighbors[i].age, mydata->list_neighbors[i].distance, mydata->list_neighbors[i].flag_isItAnchor, mydata->list_neighbors[i].flag_isItPreAnchor); }
 		}	
@@ -397,7 +401,7 @@ if (mydata->flag_electionTimeIsRunning) {
 void setup() {
 
 	// Verbose : set flag_verbose=1 if you want to see execution details on terminal, flag_verbose=0 if not.
-	mydata->flag_verbose = 0;
+	mydata->flag_verbose = 1;
 	
 	// Initialize the random generator
     while(get_voltage() == -1);
@@ -431,6 +435,7 @@ void setup() {
 	setMsg_myId_iAmAnchor();
 	setMsg_myId_iAmPreAnchor();
 	setMsg_myId_iAmNotPreAnchor();
+	mydata->nbPreAnchors = 0;
 }
 
 //-------------------------------------------------------------------------------
@@ -455,6 +460,7 @@ void loop() {
 
 
 
+
 	// -------- Dispersion algorithm --------
 
 	// Remove old neighbors and slide list_neighbors positions
@@ -464,59 +470,49 @@ void loop() {
 	}
 	
 
-	/*
-
 	// A new message has arrived : a kilobot in the neighborhood notifies its presence
 	if (mydata->flag_newMessage) {
 		if (mydata->flag_verbose) { printf("[Kilobot ID%d] : New message ! Kilobot ID%d has been detected at distance %d (min distance required between neighbors = %d).\n", kilo_uid, mydata->rcvd_msg_id, mydata->dist, dist_min_between2Kbots+1); }
 		manageNeighborsList(mydata->rcvd_msg_id, 0);
-		if (mydata->rcvd_msg_isItPreAnchor) {
-			set_color(RGB(3,0,1));
-		}
 		mydata->flag_newMessage = 0;
 	}
 
 
+		//if (!mydata->flag_timeToAnchorIsRunning) {
+	if (!mydata->flag_iAmPreAnchor) {
+		// Keep walking to find a better zone
+		keepWalking();
+	}
 
+	if ((!mydata->flag_iAmPreAnchor) && (mydata->nbAnchors > 0)) { // entra in fase preanchor
+		mydata->flag_iAmPreAnchor = 1;
+		mydata->lastReset_timeToWait = kilo_ticks;
+	}
 
+	if ((mydata->flag_iAmPreAnchor) && (kilo_ticks < mydata->lastReset_timeToWait + kticks_max_timeToAnchor)) {
+		set_motors(0,0);
+	} else {
+		mydata->flag_iAmPreAnchor = 0;
+	}
 
+	if ((!mydata->flag_iAmPreAnchor) && (mydata->nbPreAnchors > 0)) { // entra in fase preanchor
+		set_motors(0,0);
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	if ((mydata->flag_iAmPreAnchor) && (mydata->nbAnchors == 0)) {
+		mydata->flag_iAmPreAnchor = 0;
+	}
 
 
 	if (mydata->nbAnchors == DESIRED_NBNEIGHBORS) {
 		// Keep the current position and try to fix it
 		set_motors(0,0);
-		set_color(RGB(0,0,3)); // blue
 		if (!mydata->flag_timeToAnchorIsRunning) {
 			mydata->flag_timeToAnchorIsRunning = 1;
 			mydata->lastReset_timeToAnchor = kilo_ticks;
 			if (mydata->flag_verbose) { printf("[Kilobot ID%d] : Time to anchor started at t = %d kiloticks.\n", kilo_uid, mydata->lastReset_timeToAnchor); }
 		}
-	} else if (mydata->nbAnchors > 0) {
-
- 		set_color(RGB(0,2,3)); // light blue 
-		avoiderBehavior();
-	} else {
-		if (!mydata->flag_timeToAnchorIsRunning) {
-			// Keep walking to find a better zone
-			keepWalking();
-			set_color(RGB(3,3,3)); // white
-		}
-	}
+	} 
 
 
 	// flag_timeToAnchorIsRunning treatement (attempt to fix the current kilobot position)
@@ -529,6 +525,7 @@ void loop() {
 				if (mydata->flag_verbose) { printf("[Kilobot ID%d] : I am anchor !\n", kilo_uid); }
 			} else {
 				mydata->flag_timeToAnchorIsRunning = 0;
+				mydata->flag_iAmPreAnchor = 0;
 				if (mydata->flag_verbose) { printf("[Kilobot ID%d] : Anchor failed.\n", kilo_uid); }
 			}
 		} else {
@@ -541,16 +538,112 @@ void loop() {
 
 	if (mydata->flag_timeToAnchorIsRunning) {
 		set_color(RGB(0,0,3));	// blue : anchoring period
+	} else if (mydata->flag_iAmPreAnchor) {
+		set_color(RGB(0,2,3)); 	// preAnchor : light blue 
+	} else if (mydata->nbPreAnchors > 0) {
+		set_color(RGB(3,0,0)); 	// red
 	} else {
-		setNbNeighborsLed();
+		set_color(RGB(3,3,3));	// white
 	}
-*/
 
-	showNeighborsList();
-	if (mydata->flag_verbose) { printf("-------------------------------------------------------------------------------------------\n"); }
+
+	if (mydata->flag_verbose) { 
+		showNeighborsList();
+		printf("-------------------------------------------------------------------------------------------\n"); 
+	}
 }
 
 
+
+
+
+
+
+
+
+
+
+
+/*
+	if (mydata->flag_iAmPreAnchor) {
+		if (mydata->nbAnchors == DESIRED_NBNEIGHBORS) {
+			// Keep the current position and try to fix it
+			set_motors(0,0);
+			set_color(RGB(0,0,3)); // blue
+			if (!mydata->flag_timeToAnchorIsRunning) {
+				mydata->flag_timeToAnchorIsRunning = 1;
+				mydata->lastReset_timeToAnchor = kilo_ticks;
+				if (mydata->flag_verbose) { printf("[Kilobot ID%d] : Time to anchor started at t = %d kiloticks.\n", kilo_uid, mydata->lastReset_timeToAnchor); }
+			}
+		} else {
+			uint8_t cpt = 0;
+			while(cpt < 1000) {
+				cpt++;
+			}
+			mydata->flag_iAmPreAnchor = 0;
+		}
+	}
+*/
+
+	/*
+			if (!mydata->flag_timeToAnchorIsRunning) { // bazar
+				// Keep walking to find a better zone
+				keepWalking();
+				set_color(RGB(3,3,3)); // white
+			}
+		}
+	}
+	
+
+	if ((!mydata->flag_iAmPreAnchor) && (mydata->nbPreAnchors > 0)) {
+		uint8_t cpt = 0;
+		set_color(RGB(3,0,0));
+		while(cpt < 1000) {
+			cpt++;
+		}
+	}
+*/
+	//} else if (mydata->nbAnchors > 0) {
+
+ 	//	set_color(RGB(0,2,3)); // light blue 
+	//	avoiderBehavior();
+//	} else {
+//		if (!mydata->flag_timeToAnchorIsRunning) {
+//			// Keep walking to find a better zone
+//			keepWalking();
+//			set_color(RGB(3,3,3)); // white
+//		}
+//	}
+
+
+
+
+
+
+
+/*
+
+	if (mydata->nbAnchors == DESIRED_NBNEIGHBORS) {
+		// Keep the current position and try to fix it
+		set_motors(0,0);
+		set_color(RGB(0,0,3)); // blue
+		if (!mydata->flag_timeToAnchorIsRunning) {
+			mydata->flag_timeToAnchorIsRunning = 1;
+			mydata->lastReset_timeToAnchor = kilo_ticks;
+			if (mydata->flag_verbose) { printf("[Kilobot ID%d] : Time to anchor started at t = %d kiloticks.\n", kilo_uid, mydata->lastReset_timeToAnchor); }
+		}
+	//} else if (mydata->nbAnchors > 0) {
+ 		//set_color(RGB(0,2,3)); // light blue 
+		//avoiderBehavior();
+	} else {
+		if (!mydata->flag_timeToAnchorIsRunning) {
+			// Keep walking to find a better zone
+			keepWalking();
+			set_color(RGB(3,3,3)); // white
+		}
+	}
+
+*/
 
 
 /*
