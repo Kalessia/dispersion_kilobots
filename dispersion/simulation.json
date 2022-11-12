@@ -1,7 +1,7 @@
 {
     "botName" : "DISPERSION PROBLEM",
     "randSeed" : 1,
-    "nBots" :5,
+    "nBots" : 8,
     "formation": "random",
     "pushDisplacement":1.0,
     "timeStep" : 0.0416666,

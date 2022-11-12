@@ -2,39 +2,60 @@
   "bot_states": [
     {
       "ID": 0,
-      "direction": 2.7331687153262627,
+      "direction": 4.9385968430787193,
       "state": {},
-      "x_position": 83.707590331084916,
-      "y_position": 35.337640325284653
+      "x_position": -12.55800196100601,
+      "y_position": -67.336393812518253
     },
     {
       "ID": 1,
-      "direction": 5.8484504331042393,
+      "direction": -22.091059700770913,
       "state": {},
-      "x_position": -38.827715174143577,
-      "y_position": -70.489887313458439
+      "x_position": -136.80873652881269,
+      "y_position": -10.941540897280484
     },
     {
       "ID": 2,
-      "direction": 4.640348059408308,
+      "direction": -96.364797881688048,
       "state": {},
-      "x_position": 72.0,
-      "y_position": -31.0
+      "x_position": 16.0,
+      "y_position": 48.0
     },
     {
       "ID": 3,
-      "direction": 4.3219605347985022,
+      "direction": 0.16711364675984455,
       "state": {},
-      "x_position": -12.0,
-      "y_position": 35.0
+      "x_position": 68.089720246160155,
+      "y_position": -62.642860539213146
     },
     {
       "ID": 4,
-      "direction": 8.6778083339559249,
+      "direction": 3.1129668343752357,
       "state": {},
-      "x_position": -56.0,
-      "y_position": -13.0
+      "x_position": -74.861640804935078,
+      "y_position": 17.156027023828031
+    },
+    {
+      "ID": 5,
+      "direction": -20.766151141416302,
+      "state": {},
+      "x_position": -69.305265933888961,
+      "y_position": -27.219418829541404
+    },
+    {
+      "ID": 6,
+      "direction": 4.7109493753679335,
+      "state": {},
+      "x_position": 69.248388433749355,
+      "y_position": -106.1784722780544
+    },
+    {
+      "ID": 7,
+      "direction": -9.1100640810602886,
+      "state": {},
+      "x_position": -16.314830906243095,
+      "y_position": -2.4652367007628735
     }
   ],
-  "ticks": 28377
+  "ticks": 27641
 }
