@@ -166,7 +166,7 @@ def getBotsPositionsFromJsonFile(path):
 #--------------------------------------------------------------
 
 def saveDataToCsv(saveFileName, ticks, listAreaRegionsTicks):
-    with open(saveFileName + "/voronoiData.csv", 'w', newline='') as f:
+    with open(saveFileName + "/data_voronoiData.csv", 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Tick"] + ["Region" + str(i) for i in range(len(listAreaRegionsTicks[0]))])
 
@@ -183,19 +183,30 @@ def getInfoFromSimulationJson(path):
 
 #--------------------------------------------------------------
 
-def buildPolygonShape(shapePath, diskRadius_mm, ringExtRadius_mm, ringIntRadius_mm):
+def buildPolygonShape(shapePath, arenaNormalizedArea, diskRadius_mm, ringExtRadius_mm, ringIntRadius_mm):
 
+    print("\n---------------------------------------")
     if 'disk' in shapePath:
         poly = Point((0, 0)).buffer(diskRadius_mm)
+
+        print("Polygon diskRadius in mm :", diskRadius_mm)
 
     elif 'annulus' in shapePath:
         poly1 = Point((0, 0)).buffer(ringExtRadius_mm)
         poly2 = Point((0, 0)).buffer(ringIntRadius_mm)
         poly = poly1.difference(poly2)
+
+        print("Polygon ringExtRadius in mm :", ringExtRadius_mm)
+        print("Polygon ringIntRadius in mm :", ringIntRadius_mm)
     
     else:
         print("Error in buildPolygonShape : unrecognised shape")
         return None
+
+
+    print("Polygon area in mm : ", poly.area)
+    print("arenaNormalizedArea in simulation.json : ", arenaNormalizedArea)
+    print("---------------------------------------\n")
 
     return poly
 
@@ -218,7 +229,7 @@ def computeDistsFromAreaRef(listAreaRegionsTicks):
 #--------------------------------------------------------------
 
 def saveDistsFromAreaRefToCsv(saveFileName, ticks, polyArea, nbBots, areaRef, distsFromAreaRef):
-    with open(saveFileName + "/dispersionEvaluation.csv", 'w', newline='') as f:
+    with open(saveFileName + "/data_dispersionEvaluation.csv", 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Tick"] + ["AreaPerBot"] + ["AreaRef"] + ["Region" + str(i) for i in range(len(distsFromAreaRef[0]))])
 
@@ -238,7 +249,7 @@ def computeStdRegionsPerTick(listAreaRegionsTicks):
 
 #--------------------------------------------------------------
 
-def plotDistsFromAreaRef(ticks, areaRef, listAreaRegionsTicks, nRegions):
+def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRegions):
     x = [i for i in range(nRegions)]
     
     for tick in range(len(listAreaRegionsTicks)):
@@ -250,15 +261,17 @@ def plotDistsFromAreaRef(ticks, areaRef, listAreaRegionsTicks, nRegions):
     plt.xlabel("region id (not related to kilobots id)")
     plt.ylabel("region area (mm)")
     plt.legend(loc = 'upper right')
+    plt.savefig(saveFileName + "/plot_distsFromAreaRef.png")
     plt.show()
 
 #--------------------------------------------------------------
 
-def plotSigma(ticks, sigma, nRegions):
+def plotSigma(saveFileName, ticks, sigma, nRegions):
     plt.plot(ticks, sigma)
     plt.title("Standard Deviation of " + str(nRegions) + " Voronoi Regions Per Tick")
     plt.xlabel("ticks")
     plt.ylabel("sigma (mm)")
+    plt.savefig(saveFileName + "/plot_sigma.png")
     plt.show()
 
 #--------------------------------------------------------------
@@ -280,6 +293,7 @@ def plotSigma(ticks, sigma, nRegions):
 # New folder to collect voronoi plots and voronoi's areas data
 saveFileName = "simulationAnalysis/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 os.mkdir(saveFileName)
+os.mkdir(saveFileName + "/plots_Voronoi")
 
 # Getting information from the simulation, contained in the simulation.json file
 simulationData = getInfoFromSimulationJson(simulationJsonPath)
@@ -288,7 +302,7 @@ simulationData = getInfoFromSimulationJson(simulationJsonPath)
 pointsPerTick, ticks = getBotsPositionsFromJsonFile(statesJsonPath)
 
 # Building the arena boundaries
-poly = buildPolygonShape(simulationData['arenaFileName'], diskRadius_mm, ringExtRadius_mm, ringIntRadius_mm)
+poly = buildPolygonShape(simulationData['arenaFileName'], simulationData['arenaNormalizedArea'], diskRadius_mm, ringExtRadius_mm, ringIntRadius_mm)
 
 # Definition of the origin point in the shape (to plot purpose)
 gdfOrigin = gpd.GeoDataFrame({'col1': ["origin"], 'geometry': [Point(0.,0.)]}, crs="EPSG:4326")
@@ -315,7 +329,7 @@ for index in range(len(ticks)):
     listAreaRegionsTicks.append(listAreaRegions)
 
     # plot the Voronoi's regions within the polygon shape and save the figure
-    drawRestrictedVoronoi(saveFileName, index, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot=False)
+    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", index, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot=False)
 
 
 plt.close('all')
@@ -329,11 +343,11 @@ saveDistsFromAreaRefToCsv(saveFileName, ticks, poly.area, simulationData['nBots'
 
 # Distances from the AreaRef : each points represent a region area, each line represents the list of regions in a tick.
 # We would like to see the entire line get closer to AreaRef, with a minimal distance variation of its points.
-plotDistsFromAreaRef(ticks, areaRef, listAreaRegionsTicks, len(region_polys))
+plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, len(region_polys))
 
 # Standard deviation (sigma) : as a function of time ticks, we would like to see sigma get closer to zero
 sigma = computeStdRegionsPerTick(listAreaRegionsTicks)
-plotSigma(ticks, sigma, len(region_polys))
+plotSigma(saveFileName, ticks, sigma, len(region_polys))
 
 
 
