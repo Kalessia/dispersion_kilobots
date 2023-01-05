@@ -2,7 +2,7 @@
     "botName" : "DISPERSION PROBLEM",
     "randSeed" : 1,
     "nBots" : 15,
-    "formation": "random",
+    "formation": "line",
     "pushDisplacement":1.0,
     "timeStep" : 0.0416666,
     "__note" : "0.04166 is 24 FPS which matches the movie frame rate",
@@ -33,7 +33,7 @@
     "GUI"  : 1 ,
     "msgSuccessRate" : 0.5,
     "distanceNoise" : 2,
-    "arenaFileName": "../arenas/disk.csv",
+    "arenaFileName": "../arenas/annulus.csv",
     "arenaNormalizedArea": 70570.0
 }
 
