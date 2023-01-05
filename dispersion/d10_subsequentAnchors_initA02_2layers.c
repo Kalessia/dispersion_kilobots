@@ -6,7 +6,17 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d06_subsequentAnchors.
+// d10_subsequentAnchors_initA02_2layers
+// Initialization with d08_initAnchors_02_plusCrowd to get the minimal number of spaced anchors.
+
+//  COMPLETER
+
+// NB. The main idea of the subsequent anchoring is taken from the article 
+// Bayert, Jonathan, and Sami Khorbotly. "Robotic Swarm Dispersion Using Gradient Descent Algorithm." 
+// 2019 IEEE International Symposium on Robotic and Sensors Environments (ROSE). IEEE, 2019.
+
+// Leds color code :
+
 
 
 

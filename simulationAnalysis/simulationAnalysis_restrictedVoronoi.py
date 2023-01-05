@@ -60,8 +60,8 @@ from matplotlib.collections import PatchCollection
 
 # Set the radius of the arena's shapes, in millimetres
 diskRadius_mm = 150
-ringExtRadius_mm = 150
-ringIntRadius_mm = 50
+ringExtRadius_mm = 391
+ringIntRadius_mm = 259
 
 
 # Set the 'simulationStates.json' or the 'endstate.json' path
@@ -291,7 +291,7 @@ def plotSigma(saveFileName, ticks, sigma, nRegions):
 ###############################################################
 
 # New folder to collect voronoi plots and voronoi's areas data
-saveFileName = "simulationAnalysis/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+saveFileName = "simulationAnalysis/results/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(saveFileName)
 os.mkdir(saveFileName + "/plots_Voronoi")
 

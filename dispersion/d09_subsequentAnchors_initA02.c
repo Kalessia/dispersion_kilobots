@@ -6,7 +6,48 @@
 // DESCRIPTION
 //-------------------------------------------------------------------------------
 
-// d06_subsequentAnchors.
+// d09_subsequentAnchors_initA02
+// Initialization with d08_initAnchors_02_plusCrowd to get the minimal number of spaced anchors.
+
+// Then, The same algorithm of d05_subsequentAnchors_basic starts. Each kilobot broadcasts continuously its state 
+// (mydata->flag_iAmAnchor=1 or mydata->flag_iAmAnchor=0).
+// Each NOT-anchor kilobot moves with a runAndTumble avoiding walk (d03) until it finds n = DESIRED_NBNEIGHBORS kilobot-anchors
+// at a good distance (dist_min_between2Kbots), then it stops and becomes anchor itself.
+
+// NB. The main idea of the subsequent anchoring is taken from the article 
+// Bayert, Jonathan, and Sami Khorbotly. "Robotic Swarm Dispersion Using Gradient Descent Algorithm." 
+// 2019 IEEE International Symposium on Robotic and Sensors Environments (ROSE). IEEE, 2019.
+
+// Leds color code :
+// Led magenta : anchor-kilobot = kilobots with 0 or 1 neighbor at the end of the ticks_min_timeToCollectNeighbors period
+// Led blue : NOT anchor kilobot, kilobots with DESIRED_NBNEIGHBORS anchors in the neighborhood
+// Led light blue : NOT anchor kilobot, kilobots with 1 or more anchors in the neighborhood
+// Led white :  NOT anchor kilobot, kilobots with O anchors in the neighborhood
+// Led red : remaining kilobots (not classified) after the kticks_max_electionTime period 
+
+// Recommended parameters (circular arena disk.csv) :
+//	- DESIRED_NBNEIGHBORS 2 (dispersion.h)
+//	- MAX_AUTHORIZED_NBNEIGHBORS 10 (dispersion.h)
+
+/*	const uint32_t kticks_straightWalk = 500;
+	const uint32_t kticks_reorientationWalk = 500;
+	const uint32_t kticks_max_authorizedNeighborAge = 1000; // a neighborg has this age or less
+	const uint32_t kticks_max_timeToAnchor = 1100;
+	const uint32_t kticks_max_electionTime = 2000;
+	const uint32_t kticks_min_timeToCollectNeighbors = 1000;
+
+	// distances expressed in mm
+	const uint8_t dist_max_runAvoiderBehavior = 35;
+	const uint8_t dist_min_between2Kbots = 55;
+
+	// others
+	const uint8_t max_nbDetectableNeighbors = 7;*/
+
+// NB : kticks_max_timeToAnchor > kticks_max_authorizedNeighborAge, to check if old neighbors are still there
+
+// Observations :
+//  - DESIRED_NBNEIGHBORS > nbAnchors in the arena, the algorithm doesn't work
+//    Ex : if the initialization phase returns 1 only anchor, and DESIRED_NBNEIGHBORS > 1, the algorithm doesn't work
 
 
 
@@ -425,7 +466,7 @@ void loop() {
 
 
 
-	// -------- Initialisation : anchors'election algorithm --------
+	// -------- Initialisation : anchors' election algorithm --------
 	
 	if (kilo_ticks < kticks_max_electionTime) {
 		initAnchors_02_plusCrowd();
@@ -447,11 +488,11 @@ void loop() {
 	if (mydata->flag_newMessage) {
 		if (mydata->flag_verbose) { printf("[Kilobot ID%d] : New message ! Kilobot ID%d has been detected at distance %d (min distance required between neighbors = %d).\n", kilo_uid, mydata->rcvd_msg_id, mydata->dist, dist_min_between2Kbots+1); }
 
-		// 
+		
 		if (mydata->rcvd_msg_isItAnchor) {
-			manageNeighborsList(dist_min_between2Kbots);
+			manageNeighborsList(dist_min_between2Kbots); // collect of all neighbors placed at distance > dist_min_between2Kbots
 		} else {
-			manageNeighborsList(0);
+			manageNeighborsList(0); // collect of all neighbors placed at any distance (from distance=0)
 		}
 		mydata->flag_newMessage = 0;
 	}
