@@ -291,6 +291,13 @@ def plotSigma(saveFileName, ticks, sigma, nRegions):
 ###############################################################
 
 # New folder to collect voronoi plots and voronoi's areas data
+try:
+    os.makedirs('simulationAnalysis/results', exist_ok=True) 
+    pass
+except OSError:
+    print("results directory created.")
+    os.mkdir("simulationAnalysis/results")
+
 saveFileName = "simulationAnalysis/results/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(saveFileName)
 os.mkdir(saveFileName + "/plots_Voronoi")
