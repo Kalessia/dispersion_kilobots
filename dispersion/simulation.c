@@ -36,20 +36,24 @@ double polygon_area(double* x, double* y, size_t nb_points) {
     size_t j = nb_points - 1;
     for(size_t i = 0; i < nb_points; ++i) {
         area += (x[j*2] + x[i*2]) * (y[j*2] - y[i*2]);
+//        printf("\t   %f %f\n", x[i*2], y[i*2]);
         j = i;
     }
-    return area / 2.;
+    return fabs(area / 2.);
 }
 
 
 double compute_area() {
     double const main_polygon_area = polygon_area(walls_x, walls_y, walls_shapes_end_indexes[0]);
+//    printf("  main_polygon_area:  %f\n", main_polygon_area);
     double excluded_shapes_area[MAX_NB_SHAPES-1];
     double arena_area = main_polygon_area;
     for(size_t s = 1; s < walls_nb_shapes; ++s) {
         size_t const start_idx = walls_shapes_end_indexes[s-1]+1;
-        size_t const shape_length = walls_shapes_end_indexes[s] - start_idx;
-        excluded_shapes_area[s] = polygon_area(walls_x+start_idx, walls_y+start_idx, shape_length);
+        size_t const shape_length = walls_shapes_end_indexes[s] - start_idx+1;
+        excluded_shapes_area[s] = polygon_area(walls_x+start_idx*2, walls_y+start_idx*2, shape_length);
+//        printf("  start_idx: %d  shape_length: %d\n", start_idx, shape_length);
+//        printf("  excluded_shapes_area:  %f\n", excluded_shapes_area[s]);
         arena_area -= excluded_shapes_area[s];
     }
     return fabs(arena_area);
@@ -212,6 +216,7 @@ char *botinfo(void) {
 
     return botinfo_buffer;
 }
+
 
 
 

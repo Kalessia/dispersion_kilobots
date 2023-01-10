@@ -178,7 +178,7 @@ def saveDataToCsv(saveFileName, ticks, listAreaRegionsTicks):
 def getInfoFromSimulationJson(path):
     with open(path, 'r') as f:
         simulationData = json.load(f)
-
+    
     return simulationData
 
 #--------------------------------------------------------------
@@ -203,7 +203,7 @@ def buildPolygonShape(shapePath, arenaNormalizedArea, diskRadius_mm, ringExtRadi
         print("Error in buildPolygonShape : unrecognised shape")
         return None
 
-
+    print("valid ", poly.is_valid)
     print("Polygon area in mm : ", poly.area)
     print("arenaNormalizedArea in simulation.json : ", arenaNormalizedArea)
     print("---------------------------------------\n")
@@ -291,14 +291,10 @@ def plotSigma(saveFileName, ticks, sigma, nRegions):
 ###############################################################
 
 # New folder to collect voronoi plots and voronoi's areas data
-try:
-    os.makedirs('simulationAnalysis/results', exist_ok=True) 
-    pass
-except OSError:
-    print("results directory created.")
-    os.mkdir("simulationAnalysis/results")
+os.makedirs('simulationAnalysis/results', exist_ok=True)
+os.makedirs('simulationAnalysis/results/restrictedVoronoi', exist_ok=True)
 
-saveFileName = "simulationAnalysis/results/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+saveFileName = "simulationAnalysis/results/restrictedVoronoi/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(saveFileName)
 os.mkdir(saveFileName + "/plots_Voronoi")
 

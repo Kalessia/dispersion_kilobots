@@ -1,5 +1,5 @@
 ###############################################################
-# SimulationAnalysis_nonRestrictedVoronoi
+# SimulationAnalysis_nonnonRestrictedVoronoi
 ###############################################################
 
 # This file allows to obtain analyses about the quality of the dispersion 
@@ -140,14 +140,16 @@ def saveDataToCsv(saveFileName, listVolumesRegions):
 # Main
 ###############################################################
 
+# New folder to collect voronoi plots and voronoi's areas data
+os.makedirs('simulationAnalysis/results', exist_ok=True)
+os.makedirs('simulationAnalysis/results/nonRestrictedVoronoi', exist_ok=True)
+
+saveFileName = "simulationAnalysis/results/nonRestrictedVoronoi/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+os.mkdir(saveFileName)
+os.mkdir(saveFileName + "/plots_Voronoi")
+
 # Getting kilobot's positions data from kilombo's json file
 points, ticks = getDataFromJsonFile(statesJsonPath)
-
-
-# New folder to collect voronoi plots and voronoi's volumes data
-saveFileName = "simulationAnalysis/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-os.mkdir(saveFileName)
-
 
 # Computing and saving data in 'simulationAnalysis' folder
 listAreaRegions = []
@@ -155,7 +157,7 @@ for i in range(len(points)):
     volumesRegions = voronoiVolumes(np.array(points[i]))
     listAreaRegions.append(volumesRegions)
 
-    drawVoronoi(saveFileName, i, ticks[i], np.array(points[i]), showPlot=False)
+    drawVoronoi(saveFileName + "/plots_Voronoi", i, ticks[i], np.array(points[i]), showPlot=False)
 
 saveDataToCsv(saveFileName, listAreaRegions)
 

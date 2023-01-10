@@ -1,6 +1,6 @@
 
-#ifndef SIMULATION_H_
-#define SIMULATION_H_
+#ifndef DISPERSION_H_
+#define DISPERSION_H_
 
 #define init_float(X) {X = get_float_param(#X , X); }
 #define init_int(X) {X = get_int_param(#X, X); }
