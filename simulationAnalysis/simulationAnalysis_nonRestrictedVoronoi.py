@@ -19,6 +19,7 @@
 ###############################################################
 
 import os
+import shutil
 
 from time import sleep
 from datetime import datetime
@@ -48,6 +49,9 @@ warnings.filterwarnings('ignore')
 # Select the preferred path (only one) to get kilobot's positions data from kilombo's json file
 #statesJsonPath = 'dispersion/endstate.json' # final state of the entire simulation
 statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the simulation 
+
+# Set the 'simulation.json' path
+simulationJsonPath = 'dispersion/simulation.json'
 
 showPlot = False # Set 'True' to see plots during the execution
 
@@ -158,6 +162,10 @@ os.makedirs('simulationAnalysis/results/nonRestrictedVoronoi', exist_ok=True)
 saveFileName = "simulationAnalysis/results/nonRestrictedVoronoi/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(saveFileName)
 os.mkdir(saveFileName + "/plots_Voronoi")
+
+# Save a copy of parameters file and kilobots positions file
+shutil.copy(statesJsonPath, saveFileName) 
+shutil.copy(simulationJsonPath, saveFileName) 
 
 # Getting kilobot's positions data from kilombo's json file
 points, ticks = getDataFromJsonFile(statesJsonPath)
