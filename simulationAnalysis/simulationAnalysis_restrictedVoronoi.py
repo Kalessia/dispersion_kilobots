@@ -33,6 +33,7 @@
 
 import os
 
+from time import sleep
 from datetime import datetime
 from time import strftime
 
@@ -46,9 +47,9 @@ import csv
 from shapely.geometry import Point
 
 import matplotlib.pyplot as plt
-from matplotlib.path import Path
-from matplotlib.patches import PathPatch
-from matplotlib.collections import PatchCollection
+
+import warnings
+warnings.filterwarnings('ignore')
 
 
 
@@ -60,8 +61,8 @@ from matplotlib.collections import PatchCollection
 
 # Set the radius of the arena's shapes, in millimetres
 diskRadius_mm = 150
-ringExtRadius_mm = 391
-ringIntRadius_mm = 259
+ringExtRadius_mm = 200 # diam 391
+ringIntRadius_mm = 132 # diam 259
 
 
 # Set the 'simulationStates.json' or the 'endstate.json' path
@@ -73,25 +74,20 @@ statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the
 # Set the 'simulation.json' path
 simulationJsonPath = 'dispersion/simulation.json'
 
+showPlot = False # Set 'True' to see plots during the execution
+
+
+
 
 
 ###############################################################
 # Functions
 ###############################################################
 
-def plot_polygon(ax, poly, **kwargs):
-    path = Path.make_compound_path(
-        Path(np.asarray(poly.exterior.coords)[:, :2]),
-        *[Path(np.asarray(ring.coords)[:, :2]) for ring in poly.interiors])
-
-    patch = PathPatch(path, **kwargs)
-    collection = PatchCollection([patch], **kwargs)
-    
-    ax.add_collection(collection, autolim=True)
+def plot_polygon(ax, polyToPlot, color):
+    poly = gpd.GeoSeries([polyToPlot])
     ax.autoscale_view()
-    return collection
-
-# source : https://stackoverflow.com/questions/55522395/how-do-i-plot-shapely-polygons-and-objects-using-matplotlib
+    poly.plot(ax=ax, color=color)
 
 #--------------------------------------------------------------
 
@@ -110,13 +106,14 @@ def drawRestrictedVoronoi(saveFileName, nSimulation, ticksSimulation, poly, regi
 
     plot_polygon(ax, poly, color = 'black')
     for i in range(len(region_polys)):
-        plot_polygon(ax, region_polys[i], color = matRGB[1 + int(256/(len(region_polys)+1)*i)]) # plot Voronoi's regions' polygons
+        plot_polygon(ax, region_polys[i], color = matRGB[i*int(N/len(region_polys))]) # plot Voronoi's regions' polygons
 
     gdfPoints.plot(ax=ax, markersize=10, color='red') # plot kilobots' positions
     gdfOrigin.plot(ax=ax, marker="+", markersize=1000, color='black') # plot the origin point of the polygon's shape
 
     ax.axis('off')
     plt.axis('equal')
+    plt.title("Sim=" + str(nSimulation) + ", ticks=" + str(ticksSimulation))
 
     plt.savefig(saveFileName + "/nSim=" + str(nSimulation) + "_ticks=" + str(ticksSimulation) + ".png")
     
@@ -153,6 +150,7 @@ def getBotsPositionsFromJsonFile(path):
         # 'simulation['bot_states']' is a list of botStates
         # 'botStates' is a dict containing the following keys : 'ID', 'direction', 'state', 'x_position', 'y_position'
 
+        data = data[1:] # we don't want the simulation 0 in order to avoid problems with kilobots initial positions (they come out of the polygon)        
         for simulation in data:
             pointsSimulation = []
             for botStates in simulation['bot_states']:
@@ -185,28 +183,27 @@ def getInfoFromSimulationJson(path):
 
 def buildPolygonShape(shapePath, arenaNormalizedArea, diskRadius_mm, ringExtRadius_mm, ringIntRadius_mm):
 
-    print("\n---------------------------------------")
+    print("\n---------------------------------------------------------------")
     if 'disk' in shapePath:
         poly = Point((0, 0)).buffer(diskRadius_mm)
 
-        print("Polygon diskRadius in mm :", diskRadius_mm)
+        print("Python Polygon diskRadius in mm :", diskRadius_mm)
 
     elif 'annulus' in shapePath:
         poly1 = Point((0, 0)).buffer(ringExtRadius_mm)
         poly2 = Point((0, 0)).buffer(ringIntRadius_mm)
         poly = poly1.difference(poly2)
 
-        print("Polygon ringExtRadius in mm :", ringExtRadius_mm)
-        print("Polygon ringIntRadius in mm :", ringIntRadius_mm)
+        print("Python Polygon ringExtRadius in mm :", ringExtRadius_mm)
+        print("Python Polygon ringIntRadius in mm :", ringIntRadius_mm)
     
     else:
         print("Error in buildPolygonShape : unrecognised shape")
         return None
 
-    print("valid ", poly.is_valid)
-    print("Polygon area in mm : ", poly.area)
-    print("arenaNormalizedArea in simulation.json : ", arenaNormalizedArea)
-    print("---------------------------------------\n")
+    print("\nPython Polygon area in mm : ", poly.area)
+    print("Kilombo 'arenaNormalizedArea' in simulation.json : ", arenaNormalizedArea)
+    print("---------------------------------------------------------------\n")
 
     return poly
 
@@ -249,7 +246,7 @@ def computeStdRegionsPerTick(listAreaRegionsTicks):
 
 #--------------------------------------------------------------
 
-def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRegions):
+def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRegions, showPlot=False):
     x = [i for i in range(nRegions)]
     
     for tick in range(len(listAreaRegionsTicks)):
@@ -262,17 +259,21 @@ def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRe
     plt.ylabel("region area (mm)")
     plt.legend(loc = 'upper right')
     plt.savefig(saveFileName + "/plot_distsFromAreaRef.png")
-    plt.show()
+    
+    if showPlot:
+        plt.show()
 
 #--------------------------------------------------------------
 
-def plotSigma(saveFileName, ticks, sigma, nRegions):
+def plotSigma(saveFileName, ticks, sigma, nRegions, showPlot=False):
     plt.plot(ticks, sigma)
     plt.title("Standard Deviation of " + str(nRegions) + " Voronoi Regions Per Tick")
     plt.xlabel("ticks")
     plt.ylabel("sigma (mm)")
     plt.savefig(saveFileName + "/plot_sigma.png")
-    plt.show()
+    
+    if showPlot:
+        plt.show()
 
 #--------------------------------------------------------------
 
@@ -332,7 +333,10 @@ for index in range(len(ticks)):
     listAreaRegionsTicks.append(listAreaRegions)
 
     # plot the Voronoi's regions within the polygon shape and save the figure
-    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", index, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot=False)
+    nSim = index
+    if len(ticks) > 1:
+        nSim = index + 1
+    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
 
 
 plt.close('all')
@@ -346,11 +350,14 @@ saveDistsFromAreaRefToCsv(saveFileName, ticks, poly.area, simulationData['nBots'
 
 # Distances from the AreaRef : each points represent a region area, each line represents the list of regions in a tick.
 # We would like to see the entire line get closer to AreaRef, with a minimal distance variation of its points.
-plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, len(region_polys))
+plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, len(region_polys), showPlot)
 
 # Standard deviation (sigma) : as a function of time ticks, we would like to see sigma get closer to zero
 sigma = computeStdRegionsPerTick(listAreaRegionsTicks)
-plotSigma(saveFileName, ticks, sigma, len(region_polys))
+plotSigma(saveFileName, ticks, sigma, len(region_polys), showPlot)
 
+print("The analysis is complete. Please find the data and plots in the", saveFileName, "directory.\n")
 
-
+if showPlot:
+    sleep(3)
+    plt.close('all')

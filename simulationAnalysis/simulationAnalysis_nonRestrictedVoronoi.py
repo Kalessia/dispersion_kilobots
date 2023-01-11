@@ -9,7 +9,7 @@
 # Voronoi regions areas are illimited for those regions related to 
 # kilobots' positions in the external perimeter of the arena shape.  
 
-# Results are saved on a csv file.
+# Results are saved on csv files.
 
 
 
@@ -20,6 +20,7 @@
 
 import os
 
+from time import sleep
 from datetime import datetime
 from time import strftime
 
@@ -31,6 +32,10 @@ import csv
 import matplotlib.pyplot as plt
 
 from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
+
+import warnings
+warnings.filterwarnings('ignore')
+
 
 
 
@@ -44,6 +49,8 @@ from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 #statesJsonPath = 'dispersion/endstate.json' # final state of the entire simulation
 statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the simulation 
 
+showPlot = False # Set 'True' to see plots during the execution
+
 
 
 
@@ -52,10 +59,12 @@ statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the
 # Functions
 ###############################################################
 
-def drawVoronoi(saveFileName, nSimulation, ticksSimulation, points, showPlot=False):
+def drawVoronoi(saveFileName, nSimulation, ticksSimulation, points, showPlot):
 
     vor = Voronoi(points)
     fig = voronoi_plot_2d(vor)
+    plt.title("Sim=" + str(nSimulation) + ", ticks=" + str(ticksSimulation))
+
     plt.savefig(saveFileName + "/nSim=" + str(nSimulation) + "_ticks=" + str(ticksSimulation) + ".png")
     
     if showPlot:
@@ -136,6 +145,8 @@ def saveDataToCsv(saveFileName, listVolumesRegions):
 
 
 
+
+
 ###############################################################
 # Main
 ###############################################################
@@ -157,11 +168,15 @@ for i in range(len(points)):
     volumesRegions = voronoiVolumes(np.array(points[i]))
     listAreaRegions.append(volumesRegions)
 
-    drawVoronoi(saveFileName + "/plots_Voronoi", i, ticks[i], np.array(points[i]), showPlot=False)
+    drawVoronoi(saveFileName + "/plots_Voronoi", i, ticks[i], np.array(points[i]), showPlot)
 
 saveDataToCsv(saveFileName, listAreaRegions)
 
+print("\nThe analysis is complete. Please find the data and plots in the", saveFileName, "directory.\n")
 
+if showPlot:
+    sleep(3)
+    plt.close('all')
 
 
 
