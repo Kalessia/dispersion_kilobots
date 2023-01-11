@@ -32,6 +32,7 @@
 ###############################################################
 
 import os
+import shutil
 
 from time import sleep
 from datetime import datetime
@@ -298,6 +299,10 @@ os.makedirs('simulationAnalysis/results/restrictedVoronoi', exist_ok=True)
 saveFileName = "simulationAnalysis/results/restrictedVoronoi/simVoronoi_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(saveFileName)
 os.mkdir(saveFileName + "/plots_Voronoi")
+
+# Save a copy of parameters file and kilobots positions file
+shutil.copy(statesJsonPath, saveFileName) 
+shutil.copy(simulationJsonPath, saveFileName) 
 
 # Getting information from the simulation, contained in the simulation.json file
 simulationData = getInfoFromSimulationJson(simulationJsonPath)
