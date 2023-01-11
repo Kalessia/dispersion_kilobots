@@ -3,6 +3,11 @@ Study of the coverage area problem within a robotic swarm.
 
 &nbsp;
 
+***System :*** 
+> Ubuntu 20.04
+
+&nbsp;
+
 ***To run a simulation on kilombo :***  
 - install the kilombo simulator :  
     > **RUN**  
@@ -26,5 +31,5 @@ Study of the coverage area problem within a robotic swarm.
 ***To run an analysis :***
 - run a simulation on Kilombo
 - run *dispersion_kilobots/simulationAnalysis/simulationAnalysis_nonRestrictedVoronoi.py* for not limited Voronoi regions
-  or *dispersion_kilobots/simulationAnalysis/simulationAnalysis_restrictedVoronoi.py* for limitd Voronoi regions
+  or *dispersion_kilobots/simulationAnalysis/simulationAnalysis_restrictedVoronoi.py* for limited Voronoi regions
 - find results and plot in *dispersion_kilobots/simulationAnalysis/results*  
