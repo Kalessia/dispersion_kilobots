@@ -20,3 +20,11 @@ Study of the coverage area problem within a robotic swarm.
 - from *dispersion* folder, modify the *mk_kilobots* file at line "export KILOHEADERS=" : replace its value by the path to the official kilolib on your computer.  
 - from *dispersion* folder, **RUN** ./mk_kilobots *EXECUTABLEFILENAME*.c  
 - find the *EXECUTABLEFILENAME.c*.hex in the *dispersion/build* folder.
+
+&nbsp;
+
+***To run an analysis :***
+- run a simulation on Kilombo
+- run *dispersion_kilobots/simulationAnalysis/simulationAnalysis_nonRestrictedVoronoi.py* for not limited Voronoi regions
+  or *dispersion_kilobots/simulationAnalysis/simulationAnalysis_restrictedVoronoi.py* for limitd Voronoi regions
+- find results and plot in *dispersion_kilobots/simulationAnalysis/results*  
