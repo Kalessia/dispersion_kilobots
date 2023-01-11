@@ -3,8 +3,7 @@ Study of the coverage area problem within a robotic swarm.
 
 &nbsp;
 
-***System :*** 
-> Ubuntu 20.04
+***System :*** Ubuntu 20.04
 
 &nbsp;
 
