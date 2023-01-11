@@ -155,6 +155,8 @@ def saveDataToCsv(saveFileName, listVolumesRegions):
 # Main
 ###############################################################
 
+print("\nAnalysing positions in", statesJsonPath)
+
 # New folder to collect voronoi plots and voronoi's areas data
 os.makedirs('simulationAnalysis/results', exist_ok=True)
 os.makedirs('simulationAnalysis/results/nonRestrictedVoronoi', exist_ok=True)

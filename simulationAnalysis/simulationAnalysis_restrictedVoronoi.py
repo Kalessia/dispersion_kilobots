@@ -71,6 +71,8 @@ ringIntRadius_mm = 132 # diam 259
 #statesJsonPath = 'dispersion/endstate.json' # final state of the entire simulation
 statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the simulation 
 
+# Vidéos
+#statesJsonPath = 'positions.json'
 
 # Set the 'simulation.json' path
 simulationJsonPath = 'dispersion/simulation.json'
@@ -291,6 +293,8 @@ def plotSigma(saveFileName, ticks, sigma, nRegions, showPlot=False):
 ###############################################################
 # Main
 ###############################################################
+
+print("\nAnalysing positions in", statesJsonPath)
 
 # New folder to collect voronoi plots and voronoi's areas data
 os.makedirs('simulationAnalysis/results', exist_ok=True)
