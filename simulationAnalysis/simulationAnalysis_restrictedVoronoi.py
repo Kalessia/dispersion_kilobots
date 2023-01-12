@@ -74,11 +74,11 @@ ringIntRadius_mm = 132 # diam 259
 # Vidéos
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_16-55-05_d03_disk_simulationStates.json'
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-04-30_d03_disk_simulationStates.json'
-statesJsonPath = '../videoAnalysis/data/json/2023-01-06/2023-01-06_18-09-42_d03_disk_simulationStates.json'
+# statesJsonPath = '../videoAnalysis/data/json/2023-01-06/2023-01-06_18-09-42_d03_disk_simulationStates.json'
 
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-22-47_d12_disk_simulationStates.json'
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-50-28_d12_disk_simulationStates.json'
-# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-56-28_d12_disk_simulationStates.json'
+statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-56-28_d12_disk_simulationStates.json'
 
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-32-18_d03_ring_simulationStates.json'
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-38-16_d03_ring_simulationStates.json'
@@ -89,7 +89,8 @@ statesJsonPath = '../videoAnalysis/data/json/2023-01-06/2023-01-06_18-09-42_d03_
 # statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_19-16-31_d12_ring_simulationStates.json'
 
 # Set the 'simulation.json' path
-simulationJsonPath = '../dispersion/simulation.json'
+#simulationJsonPath = '../dispersion/simulation.json'
+simulationJsonPath = 'dispersion/simulation.json'
 
 showPlot = False # Set 'True' to see plots during the execution
 
