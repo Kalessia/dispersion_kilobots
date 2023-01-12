@@ -29,7 +29,7 @@ Study of the coverage area problem within a robotic swarm.
 
 &nbsp;
 
-***To run an analysis :***
+***To run a Kilombo simulation analysis :***
 - run a simulation on Kilombo
 - Check/set parameters and **RUN** *dispersion_kilobots/simulationAnalysis/simulationAnalysis_nonRestrictedVoronoi.py* for not limited Voronoi regions
   or *dispersion_kilobots/simulationAnalysis/simulationAnalysis_restrictedVoronoi.py* for limited Voronoi regions
