@@ -1,6 +1,10 @@
 *.log
 *.o
 *.elf
+<<<<<<< HEAD
+*.hex
+=======
 *.hex
 *.idea
 simulationAnalysis/results/*
+>>>>>>> f0f10ed568c59b52d78db37ca8b714d87de609e1
