@@ -39,7 +39,7 @@ Study of the coverage area problem within a robotic swarm.
 
 ***To run a video analysis :***
 
-This video analysis only works with the LIP6 laboratory settings with the camera fully zoomed out.
+This video analysis only works with the ISIR laboratory settings with the camera fully zoomed out.
 - put the videos you want to analyze in the path *./data/videos/[date_exp]* (date_exp is the date when the videos were shot and is in the format YYYY-MM-DD)
 - **all video names must end with the type of arena ("disk" or "ring")**
 - change the variable *nb_k* by the number of kilobots in the videos of the experiments (**the code assumes that it is the same number in all the videos**)
@@ -56,6 +56,6 @@ The different files obtained after analysis of the videos :
   - the first line is: number of kilobots, x,y coordinates of the arena, its radius (if it is a ring, there will be the coordinates and the radius of the lower and upper disk, if not, the coordinates and the radius of the upper disk are -1)
   - the other lines are: the frame number and the coordinates of a kilobot
   - all coordinates are relative to the frame and not to the center of the arena
-- the positions of the kilobots in relation to the center of the arena is put in a json file *./data/json/name_video.json* to then do the analysis
+- the positions of the kilobots in relation to the center of the arena is put in a json file *./data/json/[name_exp]/name_video.json* to then do the analysis
 
 Here are all the libraries used: time, cv2, os, math, shutil, json
