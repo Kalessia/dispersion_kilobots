@@ -264,6 +264,7 @@ def computeStdRegionsPerTick(listAreaRegionsTicks):
 #--------------------------------------------------------------
 
 def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRegions, showPlot=False):
+    plt.close('all')
     x = [i for i in range(nRegions)]
     
     for tick in range(len(listAreaRegionsTicks)):
@@ -283,10 +284,13 @@ def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRe
 #--------------------------------------------------------------
 
 def plotSigma(saveFileName, ticks, sigma, nRegions, showPlot=False):
+    plt.close('all')
     plt.plot(ticks, sigma)
+    plt.axhline(0, color = 'red', linestyle = '-')
     plt.title("Standard Deviation of " + str(nRegions) + " Voronoi Regions Per Tick")
     plt.xlabel("ticks")
     plt.ylabel("sigma (mm)")
+    plt.ylim(bottom = -1000)
     plt.savefig(saveFileName + "/plot_sigma.png")
     
     if showPlot:
@@ -359,10 +363,9 @@ for index in range(len(ticks)):
     nSim = index
     if len(ticks) > 1:
         nSim = index + 1
-    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
+    #drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
 
 
-plt.close('all')
 
 # save the Voronoi's regions' areas
 saveDataToCsv(saveFileName, ticks, listAreaRegionsTicks)

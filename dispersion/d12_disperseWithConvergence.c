@@ -28,7 +28,7 @@ REGISTER_USERDATA(USERDATA)
 #define FORWARD 1
 #define LEFT 2
 #define RIGHT 3
-#define TH 600 // Time threshold to lower distance from neighbours in seconds
+#define TH 450 // Time threshold to lower distance from neighbours in seconds
 
 /* Idea: Reduce distance from neighbours over time. */
 /* Idea to improve: Once stopped, kilobots keep a list of the distances that they receive messages from, it could help determine if a kilobot is very far away from some and not others. The problem with this is that this might be normal if the opt distance between kilobots is less than 80mm. (might receive comms from other kilobots further. But this may also be unlikely bc 80mm is about the space for max 2 kilobots that would be stuck together close.) */

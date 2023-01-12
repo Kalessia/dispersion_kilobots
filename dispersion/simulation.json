@@ -7,7 +7,7 @@
     "timeStep" : 0.0416666,
     "__note" : "0.04166 is 24 FPS which matches the movie frame rate",
     "__timeStep" : 0.03225,
-    "simulationTime" : 100000, 
+    "simulationTime" : 100500, 
     "commsRadius" : 85,
     "showComms" : 1.0,
     "showCommsRadius" : 0,
@@ -33,7 +33,7 @@
     "GUI"  : 1 ,
     "msgSuccessRate" : 0.5,
     "distanceNoise" : 2,
-    "arenaFileName": "../arenas/annulus.csv",
+    "arenaFileName": "../arenas/disk.csv",
     "arenaNormalizedArea": 70570.0
 }
 
