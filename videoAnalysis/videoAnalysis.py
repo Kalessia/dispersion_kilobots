@@ -474,7 +474,7 @@ def convert_to_json(dict_positions, path_json):
 
     for i, key in enumerate(dict_positions.keys()):
         dict_init["bot_states"] = []
-        dict_init["ticks"] = int(key) * 32
+        dict_init["ticks"] = int(key) * 16  # 32 ticks par sec (soit 16 pour une analyse de 2 frames par sec)
         for j, pos in enumerate(dict_positions[key]):
             dict_pos["ID"] = j
             dict_pos["direction"] = direction
