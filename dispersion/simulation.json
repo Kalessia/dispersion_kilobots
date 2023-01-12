@@ -1,6 +1,6 @@
  {
     "botName" : "DISPERSION PROBLEM",
-    "randSeed" : 1,
+    "randSeed" : 14,
     "nBots" : 15,
     "formation": "line",
     "pushDisplacement":1.0,

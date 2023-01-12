@@ -363,7 +363,7 @@ for index in range(len(ticks)):
     nSim = index
     if len(ticks) > 1:
         nSim = index + 1
-    #drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
+    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
 
 
 
