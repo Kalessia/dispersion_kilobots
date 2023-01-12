@@ -2,4 +2,3 @@
 *.o
 *.elf
 *.hex
-simulationAnalysis/results/*
