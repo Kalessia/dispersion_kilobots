@@ -33,7 +33,7 @@
     "GUI"  : 1 ,
     "msgSuccessRate" : 0.5,
     "distanceNoise" : 2,
-    "arenaFileName": "../arenas/disk.csv",
+    "arenaFileName": "../arenas/annulus.csv",
     "arenaNormalizedArea": 70570.0
 }
 
