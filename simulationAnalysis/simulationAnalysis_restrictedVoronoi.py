@@ -72,7 +72,21 @@ ringIntRadius_mm = 132 # diam 259
 statesJsonPath = 'dispersion/simulationStates.json' # intermediate states of the simulation 
 
 # Vidéos
-#statesJsonPath = 'positions.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_16-55-05_d03_disk_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-04-30_d03_disk_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-09-42_d03_disk_simulationStates.json'
+
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-22-47_d12_disk_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-50-28_d12_disk_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_17-56-28_d12_disk_simulationStates.json'
+
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-32-18_d03_ring_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-38-16_d03_ring_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_18-45-19_d03_ring_simulationStates.json'
+
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_19-06-07_d12_ring_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_19-11-50_d12_ring_simulationStates.json'
+# statesJsonPath = 'videoAnalysis/data/json/2023-01-06/2023-01-06_19-16-31_d12_ring_simulationStates.json'
 
 # Set the 'simulation.json' path
 simulationJsonPath = 'dispersion/simulation.json'
@@ -250,6 +264,7 @@ def computeStdRegionsPerTick(listAreaRegionsTicks):
 #--------------------------------------------------------------
 
 def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRegions, showPlot=False):
+    plt.close('all')
     x = [i for i in range(nRegions)]
     
     for tick in range(len(listAreaRegionsTicks)):
@@ -269,10 +284,13 @@ def plotDistsFromAreaRef(saveFileName, ticks, areaRef, listAreaRegionsTicks, nRe
 #--------------------------------------------------------------
 
 def plotSigma(saveFileName, ticks, sigma, nRegions, showPlot=False):
+    plt.close('all')
     plt.plot(ticks, sigma)
+    plt.axhline(0, color = 'red', linestyle = '-')
     plt.title("Standard Deviation of " + str(nRegions) + " Voronoi Regions Per Tick")
     plt.xlabel("ticks")
     plt.ylabel("sigma (mm)")
+    plt.ylim(bottom = -1000)
     plt.savefig(saveFileName + "/plot_sigma.png")
     
     if showPlot:
@@ -345,10 +363,9 @@ for index in range(len(ticks)):
     nSim = index
     if len(ticks) > 1:
         nSim = index + 1
-    drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
+    #drawRestrictedVoronoi(saveFileName + "/plots_Voronoi", nSim, ticks[index], poly, region_polys, gdfPoints, gdfOrigin, showPlot)
 
 
-plt.close('all')
 
 # save the Voronoi's regions' areas
 saveDataToCsv(saveFileName, ticks, listAreaRegionsTicks)
