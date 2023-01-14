@@ -6,6 +6,8 @@ Study of the coverage area problem within a robotic swarm.
 ***System :*** 
 - Ubuntu 20.04.5 LTS
 - Python 3.9.13
+- kilolib and kilombo provided to avoid compatibility
+ issues
 
 &nbsp;
 
